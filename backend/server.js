@@ -45,8 +45,25 @@ const app = express();
 app.use(helmet()); // himoya header'lari (X-Frame-Options, CSP va h.k.)
 
 // CORS: qaysi frontend domeni bu API ga murojaat qila oladi.
-// CLIENT_URL .env dan olinadi; ko'rsatilmagan bo'lsa — hammaga ruxsat ("*").
-app.use(cors({ origin: process.env.CLIENT_URL || "*" }));
+// CLIENT_URL da bir nechta domenni vergul bilan sanash mumkin, masalan:
+//   CLIENT_URL=https://tilim.netlify.app,http://localhost:5173
+const allowedOrigins = (process.env.CLIENT_URL || "")
+  .split(",")
+  .map((s) => s.trim().replace(/\/$/, "")) // oxiridagi "/" ni olib tashlaymiz
+  .filter(Boolean);
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      // origin bo'lmasa — bu brauzer emas (Postman, curl, server-to-server).
+      // CLIENT_URL berilmagan bo'lsa — development rejimi, hammaga ruxsat.
+      if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error(`CORS: ${origin} domeniga ruxsat yo'q`));
+    },
+  })
+);
 
 // So'rov tanasidagi (body) JSON'ni avtomatik obyektga aylantiradi → req.body
 app.use(express.json());

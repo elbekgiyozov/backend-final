@@ -193,6 +193,54 @@ BOT_WEBHOOK_DOMAIN=https://sizning-backend.onrender.com
 BOT_WEBHOOK_SECRET=tasodifiy_maxfiy_satr
 ```
 
+## Deploy
+
+### Backend — Railway
+
+Repo mono-repo bo'lgani uchun **Root Directory** ni `backend` qilib ko'rsatish shart.
+
+1. Railway → **New Project** → **Deploy from GitHub repo** → repozitoriyani tanlang.
+2. Service → **Settings** → **Root Directory** = `backend`.
+   (Start command va healthcheck `backend/railway.json` dan avtomatik olinadi.)
+3. **Variables** bo'limiga quyidagilarni qo'ying:
+
+| O'zgaruvchi | Qiymat |
+|---|---|
+| `MONGO_URI` | Atlas connection string (`mongodb+srv://...`) |
+| `JWT_SECRET` | uzun tasodifiy satr |
+| `JWT_EXPIRE` | `7d` |
+| `CLIENT_URL` | frontend domeni (bir nechtasi vergul bilan) |
+| `NODE_ENV` | `production` |
+| `BOT_TOKEN` | @BotFather tokeni |
+| `BOT_ADMIN_IDS` | Telegram ID'laringiz |
+| `BOT_WEBHOOK_DOMAIN` | Railway bergan domen (birinchi deploy'dan keyin) |
+| `BOT_WEBHOOK_PATH` | `/api/telegram/webhook` |
+| `BOT_WEBHOOK_SECRET` | tasodifiy satr |
+| `MONGOMS_DISABLE_POSTINSTALL` | `1` — mongodb-memory-server binarini yuklamasin |
+
+> `PORT` ni qo'lda kiritmang — uni Railway o'zi beradi, kod `process.env.PORT` dan oladi.
+
+4. **Settings → Networking → Generate Domain** → chiqqan manzilni `BOT_WEBHOOK_DOMAIN` ga yozing va **Redeploy** qiling.
+5. Tekshirish: `https://<domen>/` → `{"status":"ok","service":"tilim API"}`.
+   Log'da `Telegram bot webhook rejimida: ...` yozuvi chiqishi kerak.
+
+### Baza — MongoDB Atlas
+
+1. Bepul **M0** cluster yarating.
+2. **Database Access** → foydalanuvchi qo'shing (parolda maxsus belgi ishlatmang).
+3. **Network Access** → `0.0.0.0/0` (Railway IP'lari o'zgarib turadi).
+4. **Connect → Drivers** dan connection string'ni oling, oxiriga baza nomini qo'shing:
+   `mongodb+srv://user:parol@cluster.mongodb.net/tilim`
+
+### Frontend — Netlify
+
+- Base directory: `frontend`
+- Build command: `npm run build`
+- Publish directory: `frontend/dist`
+- Environment: `VITE_API_URL=https://<railway-domen>/api`
+
+Deploy'dan keyin Netlify domenini backend'dagi `CLIENT_URL` ga qo'shing va Railway'ni redeploy qiling.
+
 ## Postman collection
 
 `backend/postman/` ichida ikkita fayl bor — Postman'da **Import** qiling:
