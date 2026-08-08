@@ -20,7 +20,7 @@ export default function Navbar() {
             📚
           </span>
           <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent dark:from-indigo-400 dark:to-purple-400">
-            TilOrgan
+            Tilim
           </span>
         </Link>
         <div className="flex items-center gap-2">

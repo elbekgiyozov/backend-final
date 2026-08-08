@@ -1,7 +1,7 @@
 {
   "info": {
-    "name": "TilOrgan API",
-    "description": "TilOrgan (til o'rganish ilovasi) backend API.\n\n## Ishlatish tartibi\n\n1. `TilOrgan.postman_environment.json` ni Postman'ga import qiling va uni faol environment sifatida tanlang.\n2. **Auth → Register** yoki **Auth → Login** so'rovini yuboring — qaytgan token avtomatik ravishda `{{token}}` o'zgaruvchisiga saqlanadi.\n3. Qolgan himoyalangan so'rovlar shu tokendan foydalanadi (collection darajasida Bearer auth o'rnatilgan).\n4. **Lessons → Create** va **Words → Create** so'rovlari yaratilgan ID'ni `{{lessonId}}` / `{{wordId}}` ga saqlaydi, shuning uchun keyingi GET/PUT/DELETE so'rovlarini qo'lda tahrirlash shart emas.\n\n## Environment o'zgaruvchilari\n\n| O'zgaruvchi | Izoh |\n|---|---|\n| `baseUrl` | API manzili, masalan `http://localhost:5001/api` |\n| `token` | JWT — Login/Register avtomatik to'ldiradi |\n| `lessonId` | Oxirgi yaratilgan dars ID si |\n| `wordId` | Oxirgi yaratilgan so'z ID si |\n\n> Eslatma: macOS'da 5000-portni AirPlay Receiver egallaydi, shuning uchun lokalda 5001 ishlatilgan.",
+    "name": "Tilim API",
+    "description": "Tilim (til o'rganish ilovasi) backend API.\n\n## Ishlatish tartibi\n\n1. `Tilim.postman_environment.json` ni Postman'ga import qiling va uni faol environment sifatida tanlang.\n2. **Auth → Register** yoki **Auth → Login** so'rovini yuboring — qaytgan token avtomatik ravishda `{{token}}` o'zgaruvchisiga saqlanadi.\n3. Qolgan himoyalangan so'rovlar shu tokendan foydalanadi (collection darajasida Bearer auth o'rnatilgan).\n4. **Lessons → Create** va **Words → Create** so'rovlari yaratilgan ID'ni `{{lessonId}}` / `{{wordId}}` ga saqlaydi, shuning uchun keyingi GET/PUT/DELETE so'rovlarini qo'lda tahrirlash shart emas.\n\n## Environment o'zgaruvchilari\n\n| O'zgaruvchi | Izoh |\n|---|---|\n| `baseUrl` | API manzili, masalan `http://localhost:5001/api` |\n| `token` | JWT — Login/Register avtomatik to'ldiradi |\n| `lessonId` | Oxirgi yaratilgan dars ID si |\n| `wordId` | Oxirgi yaratilgan so'z ID si |\n\n> Eslatma: macOS'da 5000-portni AirPlay Receiver egallaydi, shuning uchun lokalda 5001 ishlatilgan.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -59,7 +59,7 @@
                 ""
               ]
             },
-            "description": "Server tirikligini tekshiradi. Deploy platformalari (Render, Railway) shu manzilni so'raydi.\n\nJavob: `{ \"status\": \"ok\", \"service\": \"til-organish API\" }`"
+            "description": "Server tirikligini tekshiradi. Deploy platformalari (Render, Railway) shu manzilni so'raydi.\n\nJavob: `{ \"status\": \"ok\", \"service\": \"tilim API\" }`"
           },
           "response": []
         }

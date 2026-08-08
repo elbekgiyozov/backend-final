@@ -1,5 +1,5 @@
 {
-  "name": "til-organish-backend",
+  "name": "tilim-backend",
   "version": "1.0.0",
   "description": "Til o'rganish ilovasi uchun Express + MongoDB backend",
   "main": "server.js",

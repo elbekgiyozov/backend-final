@@ -1,4 +1,4 @@
-# 📚 TilOrgan — Til o'rganish ilovasi
+# 📚 Tilim — Til o'rganish ilovasi
 
 Full-stack til o'rganish platformasi: **React + Express + MongoDB**, JWT autentifikatsiya bilan.
 Foydalanuvchi darslar (Lesson) va so'zlar (Word) yaratadi, tahrirlaydi va o'chiradi.
@@ -99,7 +99,7 @@ npm run dev               # http://localhost:5000
 `.env`:
 ```
 PORT=5000
-MONGO_URI=mongodb://127.0.0.1:27017/til_organish
+MONGO_URI=mongodb://127.0.0.1:27017/tilim
 JWT_SECRET=maxfiy_kalit
 JWT_EXPIRE=7d
 CLIENT_URL=http://localhost:5173
@@ -199,8 +199,8 @@ BOT_WEBHOOK_SECRET=tasodifiy_maxfiy_satr
 
 | Fayl | Nima |
 |---|---|
-| `TilOrgan.postman_collection.json` | 17 ta so'rov: Health, Auth, Lessons, Words, xatolik holatlari |
-| `TilOrgan.postman_environment.json` | `baseUrl`, `serverUrl`, `token`, `lessonId`, `wordId` |
+| `Tilim.postman_collection.json` | 17 ta so'rov: Health, Auth, Lessons, Words, xatolik holatlari |
+| `Tilim.postman_environment.json` | `baseUrl`, `serverUrl`, `token`, `lessonId`, `wordId` |
 
 Ishlatish: environment'ni tanlang → **Auth → Login** (token avtomatik `{{token}}` ga saqlanadi)
 → qolgan so'rovlarni yuboraverasiz. `Dars yaratish` / `So'z yaratish` esa ID'ni

@@ -71,7 +71,7 @@ app.use(
 /* ------------------------------ 2. Route'lar ------------------------------ */
 
 // Health check — server tirikligini tekshirish uchun (deploy platformalari shuni so'raydi).
-app.get("/", (req, res) => res.json({ status: "ok", service: "til-organish API" }));
+app.get("/", (req, res) => res.json({ status: "ok", service: "tilim API" }));
 
 // Har bir resurs o'z prefiksi ostida. Masalan authRoutes ichidagi "/login"
 // tashqaridan "/api/auth/login" bo'lib ko'rinadi.

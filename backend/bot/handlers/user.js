@@ -85,7 +85,7 @@ export const registerUserHandlers = (bot) => {
     // replyWithHTML — reply(text, { parse_mode: "HTML" }) ning qisqa shakli
     await ctx.replyWithHTML(
       `👋 Assalomu alaykum, <b>${name}</b>!\n\n` +
-        "Bu — <b>TilOrgan</b> platformasining rasmiy boti. Bu yerda darslar va so'zlar bilan tanishishingiz, " +
+        "Bu — <b>Tilim</b> platformasining rasmiy boti. Bu yerda darslar va so'zlar bilan tanishishingiz, " +
         "sayt akkauntingizni bog'lab profilingizni ko'rishingiz mumkin.\n\n" +
         "Boshlash uchun pastdagi menyudan foydalaning yoki /help ni bosing.",
       // Uchinchi argument — pastdagi doimiy menyu (reply keyboard)

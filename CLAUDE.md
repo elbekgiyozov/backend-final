@@ -1,4 +1,4 @@
-# CLAUDE.md — TilOrgan loyihasi
+# CLAUDE.md — Tilim loyihasi
 
 Til o'rganish full-stack ilovasi (TTZ: React + Express + MongoDB).
 

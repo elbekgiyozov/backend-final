@@ -9,8 +9,8 @@ import mongoose from "mongoose";
 
 export const connectDB = async () => {
   // Ulanish manzili .env faylda saqlanadi (kodga yozilmaydi — bu maxfiy ma'lumot).
-  // Lokal: mongodb://127.0.0.1:27017/til_organish
-  // Cloud: mongodb+srv://user:parol@cluster.mongodb.net/til_organish
+  // Lokal: mongodb://127.0.0.1:27017/tilim
+  // Cloud: mongodb+srv://user:parol@cluster.mongodb.net/tilim
   const uri = process.env.MONGO_URI;
 
   if (!uri) {
