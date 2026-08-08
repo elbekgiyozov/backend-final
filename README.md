@@ -193,16 +193,33 @@ BOT_WEBHOOK_DOMAIN=https://sizning-backend.onrender.com
 BOT_WEBHOOK_SECRET=tasodifiy_maxfiy_satr
 ```
 
+## Live havolalar
+
+| Nima | Manzil |
+|---|---|
+| Frontend (Vercel) | https://backend-final-mauve.vercel.app |
+| Backend API (Railway) | https://backend-final-production-50fe.up.railway.app |
+| Telegram bot | [@backccbot](https://t.me/backccbot) |
+| Repozitoriya | https://github.com/elbekgiyozov/backend-final |
+
+Demo akkaunt: **test@example.com / 123456**
+
 ## Deploy
+
+Umumiy sxema: **Atlas** (baza) → **Railway** (backend + bot) → **Vercel** (frontend).
+Tartib muhim: har bir keyingisi oldingisining domenini talab qiladi.
 
 ### Backend — Railway
 
 Repo mono-repo bo'lgani uchun **Root Directory** ni `backend` qilib ko'rsatish shart.
 
 1. Railway → **New Project** → **Deploy from GitHub repo** → repozitoriyani tanlang.
-2. Service → **Settings** → **Root Directory** = `backend`.
-   (Start command va healthcheck `backend/railway.json` dan avtomatik olinadi.)
-3. **Variables** bo'limiga quyidagilarni qo'ying:
+2. Service → **Settings** → **Source** → **Root Directory** = `/backend`, so'ng yonidagi
+   tasdiqlash tugmasini bosing (Railway bu maydonni avtomatik saqlamaydi).
+   Start command va healthcheck `backend/railway.json` dan olinadi.
+3. **Settings → Regions** → bazangiz turgan qit'aga yaqin region (masalan Atlas Frankfurt'da
+   bo'lsa — **EU West**). Noto'g'ri region har bir baza so'roviga 200-300 ms qo'shadi.
+4. **Variables** bo'limiga quyidagilarni qo'ying:
 
 | O'zgaruvchi | Qiymat |
 |---|---|
@@ -220,26 +237,76 @@ Repo mono-repo bo'lgani uchun **Root Directory** ni `backend` qilib ko'rsatish s
 
 > `PORT` ni qo'lda kiritmang — uni Railway o'zi beradi, kod `process.env.PORT` dan oladi.
 
-4. **Settings → Networking → Generate Domain** → chiqqan manzilni `BOT_WEBHOOK_DOMAIN` ga yozing va **Redeploy** qiling.
-5. Tekshirish: `https://<domen>/` → `{"status":"ok","service":"tilim API"}`.
-   Log'da `Telegram bot webhook rejimida: ...` yozuvi chiqishi kerak.
+5. **Settings → Networking → Generate Domain** → chiqqan manzilni `BOT_WEBHOOK_DOMAIN` ga
+   yozing va redeploy qiling.
+6. Ixtiyoriy: **Settings → Watch Paths** = `/backend/**` — frontend o'zgarganda backend
+   bekorga qayta deploy bo'lmaydi.
+
+Tekshirish:
+```bash
+curl https://<domen>/            # {"status":"ok","service":"tilim API"}
+curl https://<domen>/api/lessons # bazadan ma'lumot
+```
+Log'da `Telegram bot webhook rejimida: ...` chiqsa — bot produksiya rejimida.
 
 ### Baza — MongoDB Atlas
 
-1. Bepul **M0** cluster yarating.
-2. **Database Access** → foydalanuvchi qo'shing (parolda maxsus belgi ishlatmang).
-3. **Network Access** → `0.0.0.0/0` (Railway IP'lari o'zgarib turadi).
-4. **Connect → Drivers** dan connection string'ni oling, oxiriga baza nomini qo'shing:
-   `mongodb+srv://user:parol@cluster.mongodb.net/tilim`
+1. Bepul **M0** cluster yarating. Region'ni Railway region'iga yaqin tanlang
+   (masalan Frankfurt) — cluster yaratilgandan keyin uni o'zgartirib bo'lmaydi.
+2. "Preload sample dataset" ni **o'chiring** — bepul 512 MB joyning katta qismini egallaydi.
+3. **Database Access** → foydalanuvchi qo'shing. Parolda `@ : / ? #` belgilari bo'lmasin —
+   ular connection string'ni buzadi.
+4. **Network Access** → `0.0.0.0/0`. Railway IP'lari o'zgarib turadi, aniq IP yozib bo'lmaydi.
+5. **Connect → Drivers** dan string'ni oling va **baza nomini qo'shing**:
+   ```
+   mongodb+srv://user:parol@cluster.mongodb.net/tilim?retryWrites=true&w=majority
+   ```
+   `/tilim` qismisiz Mongo `test` nomli bazaga yozadi.
+6. Produksiya bazasini to'ldirish (ixtiyoriy):
+   ```bash
+   cd backend && MONGO_URI='<atlas-string>' npm run seed
+   ```
 
-### Frontend — Netlify
+### Frontend — Vercel
+
+- **Root Directory**: `frontend`
+- Framework Preset: Vite (avtomatik aniqlanadi)
+- **Environment Variables**: `VITE_API_URL = https://<railway-domen>/api`
+
+SPA routing uchun `frontend/vercel.json` qo'shilgan — busiz `/login` yoki `/lessons/:id`
+manzillarini to'g'ridan-to'g'ri ochganda 404 chiqadi.
+
+> **Muhim:** Vite `VITE_*` o'zgaruvchilarni **build paytida** kodga yozadi. Env qo'shgandan
+> keyin **Redeploy** qilish shart (Build Cache'siz), aks holda eski qiymat qoladi.
+
+Frontend'da faqat `VITE_` bilan boshlanadigan o'zgaruvchilar bo'lsin — `MONGO_URI`,
+`JWT_SECRET`, `BOT_TOKEN` kabi backend sirlari bu loyihada keraksiz.
+
+Deploy'dan keyin frontend domenini backend'dagi `CLIENT_URL` ga qo'shing (CORS uchun):
+```
+CLIENT_URL=https://<vercel-domen>,http://localhost:5173
+```
+
+### Netlify (muqobil)
 
 - Base directory: `frontend`
 - Build command: `npm run build`
 - Publish directory: `frontend/dist`
 - Environment: `VITE_API_URL=https://<railway-domen>/api`
 
-Deploy'dan keyin Netlify domenini backend'dagi `CLIENT_URL` ga qo'shing va Railway'ni redeploy qiling.
+SPA fallback uchun `frontend/public/_redirects` fayliga `/*  /index.html  200` yozing.
+
+### Tez-tez uchraydigan xatolar
+
+| Belgi | Sabab | Yechim |
+|---|---|---|
+| `Railpack could not determine how to build the app` | Root Directory qo'yilmagan, Railway repo ildizini ko'ryapti | Settings → Source → Root Directory = `/backend` |
+| `MongoServerSelectionError` | Atlas'da IP ruxsati yo'q | Network Access → `0.0.0.0/0` |
+| `bad auth` | parol noto'g'ri yoki maxsus belgi bor | `MONGO_URI` ni qayta yig'ing |
+| Saytda `/login` → 404 | SPA fallback yo'q | `vercel.json` / `_redirects` |
+| Saytdan API'ga so'rov `localhost` ga ketyapti | `VITE_API_URL` yo'q yoki redeploy qilinmagan | env qo'shib, cache'siz redeploy |
+| Brauzer konsolida CORS xatosi | backend'da `CLIENT_URL` eski | Railway'da yangilang va redeploy |
+| Bot ikki marta javob beradi / `409 Conflict` | lokal va produksiya bot bir vaqtda polling qilyapti | lokal serverni to'xtating |
 
 ## Postman collection
 
@@ -258,8 +325,24 @@ Papkalar yuqoridan pastga ketma-ket ishlatiladigan tartibda joylashgan
 (create → list → get → update → delete). Har bir so'rovda status kodlari va
 xatolik holatlari izohlangan.
 
-Deploy'dan keyin `baseUrl` va `serverUrl` ni live URL'ga almashtirsangiz,
-o'sha collection produksiyani ham tekshiradi.
+Produksiyani tekshirish uchun environment'da ikki qiymatni almashtiring:
+
+```
+serverUrl = https://backend-final-production-50fe.up.railway.app
+baseUrl   = https://backend-final-production-50fe.up.railway.app/api
+```
+
+## Topshirish ro'yxati (TZ 6-bo'lim)
+
+| Talab | Holat |
+|---|---|
+| GitHub repozitoriyasi, commit tarixi bilan | https://github.com/elbekgiyozov/backend-final |
+| Frontend live URL | https://backend-final-mauve.vercel.app |
+| Backend live URL | https://backend-final-production-50fe.up.railway.app |
+| Telegram bot username | [@backccbot](https://t.me/backccbot) |
+| README: local ishga tushirish | shu fayl, "Ishga tushirish" bo'limi |
+| Postman collection | `backend/postman/` |
+| `.env.example` (haqiqiy qiymatlarsiz) | `backend/.env.example`, `frontend/.env.example` |
 
 ## Xususiyatlar
 

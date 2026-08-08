@@ -18,8 +18,17 @@ Til o'rganish full-stack ilovasi (TTZ: React + Express + MongoDB).
 - Controllerdan xabar yuborish: `notifyAdmins` / `notifyUser` (javobni bloklamasin — `.catch(() => {})`).
 - `BOT_WEBHOOK_DOMAIN` bo'lsa webhook, aks holda polling.
 
+## Deploy
+- Backend + bot: **Railway** (Root Directory `/backend`, region EU West, `backend/railway.json`).
+- Baza: **MongoDB Atlas** M0, Frankfurt, IP ruxsati `0.0.0.0/0`.
+- Frontend: **Vercel** (Root Directory `frontend`, `frontend/vercel.json` — SPA fallback).
+- Produksiyada bot webhook rejimida (`BOT_WEBHOOK_DOMAIN` bor bo'lsa) ishlaydi.
+- Live URL'lar va tez-tez uchraydigan xatolar jadvali — `README.md`.
+- Lokal backend va produksiya boti bir vaqtda ishlamasin — Telegram 409 beradi.
+
 ## Buyruqlar
-- Backend: `cd backend && npm run dev` (port 5000), `npm run seed` — test data.
+- Backend: `cd backend && npm run dev` (port 5000, macOS'da 5001), `npm run seed` — test data.
+- `npm run db` — o'rnatishsiz lokal MongoDB, `npm run make-admin` — botga admin huquqi.
 - Frontend: `cd frontend && npm run dev` (port 5173), `npm run build`, `npm run lint`.
 - MongoDB lokalda yo'q — Atlas URI'ni `backend/.env` ga qo'ying.
 
