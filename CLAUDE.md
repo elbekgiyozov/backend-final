@@ -1,0 +1,32 @@
+# CLAUDE.md — TilOrgan loyihasi
+
+Til o'rganish full-stack ilovasi (TTZ: React + Express + MongoDB).
+
+## Tuzilma
+- `backend/` — Express API (ESM, `type: module`). Qatlamli: models / controllers / routes / middleware.
+- `backend/bot/` — Telegraf bot, server bilan bitta processda (`startBot(app)`).
+  `instance.js` bot obyektini alohida eksport qiladi — `notify.js` bilan circular import bo'lmasligi uchun.
+- `frontend/` — Vite React + Tailwind. Auth va Theme `Context` orqali; API `src/api/axios.js` (token interceptor).
+
+## Modellar
+`User` → `Lesson` → `Word` (har biri `createdBy` ref bilan). CRUD egasi yoki admin tomonidan.
+`BotUser` — Telegram foydalanuvchisi, ixtiyoriy `user` ref orqali sayt akkauntiga bog'lanadi.
+
+## Bot
+- Handlerlar `bot/handlers/`, wizardlar `bot/scenes/`, keyboardlar `bot/keyboards.js` da.
+- Admin tekshiruvi `bot/middleware.js` → `isAdmin` (DB flag, sayt roli yoki `BOT_ADMIN_IDS`).
+- Controllerdan xabar yuborish: `notifyAdmins` / `notifyUser` (javobni bloklamasin — `.catch(() => {})`).
+- `BOT_WEBHOOK_DOMAIN` bo'lsa webhook, aks holda polling.
+
+## Buyruqlar
+- Backend: `cd backend && npm run dev` (port 5000), `npm run seed` — test data.
+- Frontend: `cd frontend && npm run dev` (port 5173), `npm run build`, `npm run lint`.
+- MongoDB lokalda yo'q — Atlas URI'ni `backend/.env` ga qo'ying.
+
+## Konvensiyalar
+- Javob/kommentlar o'zbekcha, texnik atamalar inglizcha.
+- `backend/` o'quv maqsadida **batafsil kommentlangan** — yangi kod yozganda ham
+  shu uslubni saqlang: har fayl boshida vazifasini tushuntiruvchi JSDoc blok,
+  murakkab qatorlarda "nima uchun shunday" izohi.
+- Yangi resurs qo'shishda mavjud model/controller/route patternini takrorlang.
+- `.env` hech qachon commit qilinmaydi (`.gitignore` da).

@@ -1,0 +1,9 @@
+node_modules/
+.DS_Store
+*.log
+.env
+.env.local
+dist/
+
+# TTZ manba fayli (gitignore'da qo'shtirnoq ishlatilmaydi — literal deb qabul qilinadi)
+Texnik Topshiriq (2).docx
