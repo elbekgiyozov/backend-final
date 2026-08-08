@@ -7,3 +7,6 @@ dist/
 
 # TTZ manba fayli (gitignore'da qo'shtirnoq ishlatilmaydi — literal deb qabul qilinadi)
 Texnik Topshiriq (2).docx
+
+# Lokal MongoDB ma'lumotlari
+.mongodb-data/

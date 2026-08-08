@@ -67,6 +67,20 @@ Qatlamlar mas'uliyati:
 
 ## 🚀 Ishga tushirish
 
+### 0. MongoDB (lokal, o'rnatishsiz)
+
+MongoDB o'rnatilmagan bo'lsa, `mongodb-memory-server` bilan birga keladigan
+`mongod` binaridan doimiy lokal baza sifatida foydalanish mumkin:
+
+```bash
+cd backend && npm install   # binar shu paytda yuklab olinadi
+npm run db                  # 127.0.0.1:27017, ma'lumot ../.mongodb-data da saqlanadi
+```
+
+> `npm run db` skripti macOS (arm64) uchun yozilgan. Boshqa tizimda
+> `node_modules/.cache/mongodb-memory-server/` ichidagi binar nomini mos ravishda o'zgartiring,
+> yoki MongoDB Atlas URI'sini ishlating.
+
 ### 1. Backend
 
 ```bash
@@ -76,6 +90,11 @@ cp .env.example .env      # va qiymatlarni to'ldiring
 npm run seed              # (ixtiyoriy) test ma'lumotlari
 npm run dev               # http://localhost:5000
 ```
+
+> **macOS eslatmasi:** 5000-portni AirPlay Receiver (`ControlCenter`) egallab turadi.
+> Shuning uchun lokalda `.env` da `PORT=5001` qilingan — frontend `.env` dagi
+> `VITE_API_URL` ham 5001 ga moslangan. Yoki System Settings → General → AirDrop
+> & Handoff → AirPlay Receiver ni o'chiring.
 
 `.env`:
 ```
@@ -151,8 +170,14 @@ Bot backend server bilan **bitta processda** ishlaydi (`server.js` → `startBot
 ### Admin qilish
 
 1. `.env` da `BOT_ADMIN_IDS=<sizning_telegram_id>` — doimiy admin (olib tashlab bo'lmaydi).
-2. Yoki admin panel → 🛡 Adminlar → ➕ Admin qo'shish (ID/@username orqali).
-3. Yoki sayt akkauntida `role: "admin"` bo'lsa — `/link` dan keyin avtomatik admin.
+2. Yoki skript orqali (serverni qayta ishga tushirmasdan):
+   ```bash
+   cd backend
+   npm run make-admin              # bot foydalanuvchilari ro'yxati
+   npm run make-admin -- 12345678  # shu ID ni admin qilish
+   ```
+3. Yoki admin panel → 🛡 Adminlar → ➕ Admin qo'shish (ID/@username orqali).
+4. Yoki sayt akkauntida `role: "admin"` bo'lsa — `/link` dan keyin avtomatik admin.
 
 ### Avtomatik xabarlar
 

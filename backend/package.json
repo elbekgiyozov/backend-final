@@ -7,7 +7,9 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
-    "seed": "node seed.js"
+    "seed": "node seed.js",
+    "make-admin": "node makeAdmin.js",
+    "db": "node_modules/.cache/mongodb-memory-server/mongod-arm64-darwin-8.2.6 --dbpath ../.mongodb-data --port 27017 --bind_ip 127.0.0.1"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
