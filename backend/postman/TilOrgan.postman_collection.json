@@ -1,0 +1,651 @@
+{
+  "info": {
+    "name": "TilOrgan API",
+    "description": "TilOrgan (til o'rganish ilovasi) backend API.\n\n## Ishlatish tartibi\n\n1. `TilOrgan.postman_environment.json` ni Postman'ga import qiling va uni faol environment sifatida tanlang.\n2. **Auth → Register** yoki **Auth → Login** so'rovini yuboring — qaytgan token avtomatik ravishda `{{token}}` o'zgaruvchisiga saqlanadi.\n3. Qolgan himoyalangan so'rovlar shu tokendan foydalanadi (collection darajasida Bearer auth o'rnatilgan).\n4. **Lessons → Create** va **Words → Create** so'rovlari yaratilgan ID'ni `{{lessonId}}` / `{{wordId}}` ga saqlaydi, shuning uchun keyingi GET/PUT/DELETE so'rovlarini qo'lda tahrirlash shart emas.\n\n## Environment o'zgaruvchilari\n\n| O'zgaruvchi | Izoh |\n|---|---|\n| `baseUrl` | API manzili, masalan `http://localhost:5001/api` |\n| `token` | JWT — Login/Register avtomatik to'ldiradi |\n| `lessonId` | Oxirgi yaratilgan dars ID si |\n| `wordId` | Oxirgi yaratilgan so'z ID si |\n\n> Eslatma: macOS'da 5000-portni AirPlay Receiver egallaydi, shuning uchun lokalda 5001 ishlatilgan.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Barcha so'rovlar uchun umumiy tekshiruv: server javob bermay qolmasin",
+          "pm.test('Javob 5xx emas', function () {",
+          "    pm.expect(pm.response.code).to.be.below(500);",
+          "});"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5001/api"
+    },
+    {
+      "key": "serverUrl",
+      "value": "http://localhost:5001"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health check",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{serverUrl}}/",
+              "host": [
+                "{{serverUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "description": "Server tirikligini tekshiradi. Deploy platformalari (Render, Railway) shu manzilni so'raydi.\n\nJavob: `{ \"status\": \"ok\", \"service\": \"til-organish API\" }`"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "// Token'ni environment'ga saqlaymiz — keyingi so'rovlar shundan foydalanadi",
+                  "const data = pm.response.json();",
+                  "if (data.token) {",
+                  "    pm.environment.set('token', data.token);",
+                  "    console.log('Token saqlandi');",
+                  "}",
+                  "",
+                  "pm.test('Javobda parol yo\\'q', function () {",
+                  "    pm.expect(data).to.not.have.property('password');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Yangi Foydalanuvchi\",\n    \"email\": \"yangi@example.com\",\n    \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Yangi foydalanuvchi yaratadi va darhol JWT qaytaradi.\n\n**Body:** `name`, `email`, `password` (kamida 6 belgi)\n\n**Javoblar:**\n- `201` — yaratildi, javobda token bor\n- `400` — maydon to'ldirilmagan yoki validatsiya xatosi\n- `409` — email allaqachon ro'yxatdan o'tgan\n\n> Muvaffaqiyatli ro'yxatdan o'tish haqida Telegram bot barcha adminlarga xabar yuboradi."
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const data = pm.response.json();",
+                  "if (data.token) {",
+                  "    pm.environment.set('token', data.token);",
+                  "    console.log('Token saqlandi');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Tizimga kirish. `npm run seed` dan keyingi test akkaunt: **test@example.com / 123456**\n\n**Javoblar:**\n- `200` — token qaytadi\n- `401` — email yoki parol noto'g'ri (xavfsizlik uchun qaysi biri ekani aytilmaydi)"
+          },
+          "response": []
+        },
+        {
+          "name": "Me (joriy foydalanuvchi)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "description": "Token egasining ma'lumotlari. **Himoyalangan** — `Authorization: Bearer <token>` talab qilinadi.\n\n**Javoblar:**\n- `200` — foydalanuvchi obyekti (parolsiz)\n- `401` — token yo'q, yaroqsiz yoki muddati tugagan"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Lessons",
+      "item": [
+        {
+          "name": "Dars yaratish",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "// Yaratilgan dars ID sini saqlaymiz — keyingi so'rovlarda ishlatiladi",
+                  "const data = pm.response.json();",
+                  "if (data._id) {",
+                  "    pm.environment.set('lessonId', data._id);",
+                  "    console.log('lessonId = ' + data._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Postman orqali yaratilgan dars\",\n    \"description\": \"API dokumentatsiyasini sinash uchun\",\n    \"level\": \"beginner\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/lessons",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "lessons"
+              ]
+            },
+            "description": "Yangi dars. **Himoyalangan.**\n\n**Body:** `title` (majburiy), `description`, `level` (`beginner` | `intermediate` | `advanced`)\n\n> `createdBy` body'dan OLINMAYDI — u tokendan aniqlanadi, shuning uchun boshqa odam nomidan dars yaratib bo'lmaydi.\n\n> Yangi dars haqida bot adminlarga xabar yuboradi."
+          },
+          "response": []
+        },
+        {
+          "name": "Darslar ro'yxati",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/lessons?page=1&limit=10&search=&level=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "lessons"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Sahifa raqami (default 1)"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Sahifadagi elementlar soni (max 50)"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "description": "Dars nomi bo'yicha qidiruv (katta/kichik harf farqsiz)"
+                },
+                {
+                  "key": "level",
+                  "value": "",
+                  "description": "beginner | intermediate | advanced"
+                }
+              ]
+            },
+            "description": "Barcha darslar — pagination, qidiruv va daraja bo'yicha filtr bilan. Ochiq (token shart emas).\n\n**Javob tuzilishi:**\n```json\n{\n  \"data\": [ ... ],\n  \"pagination\": { \"page\": 1, \"limit\": 10, \"total\": 25, \"totalPages\": 3 }\n}\n```\n\n`createdBy` maydoni `populate` qilingan — ID o'rniga muallif ismi va emaili keladi."
+          },
+          "response": []
+        },
+        {
+          "name": "Bitta dars",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/lessons/{{lessonId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "lessons",
+                "{{lessonId}}"
+              ]
+            },
+            "description": "ID bo'yicha bitta dars. `{{lessonId}}` \"Dars yaratish\" so'rovidan keyin avtomatik to'ladi.\n\n**Javoblar:** `200` | `404` — dars topilmadi"
+          },
+          "response": []
+        },
+        {
+          "name": "Darsni yangilash",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Yangilangan dars nomi\",\n    \"level\": \"advanced\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/lessons/{{lessonId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "lessons",
+                "{{lessonId}}"
+              ]
+            },
+            "description": "Darsni yangilash. **Himoyalangan** — faqat dars egasi yoki admin.\n\nFaqat yuborilgan maydonlar o'zgaradi (qisman yangilash).\n\n**Javoblar:** `200` | `403` — begona dars | `404` — topilmadi"
+          },
+          "response": []
+        },
+        {
+          "name": "Darsni o'chirish",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/lessons/{{lessonId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "lessons",
+                "{{lessonId}}"
+              ]
+            },
+            "description": "Darsni o'chirish. **Himoyalangan** — faqat egasi yoki admin.\n\n**Javob:** `{ \"message\": \"Dars o'chirildi\", \"id\": \"...\" }`"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Words",
+      "item": [
+        {
+          "name": "So'z yaratish",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "const data = pm.response.json();",
+                  "if (data._id) {",
+                  "    pm.environment.set('wordId', data._id);",
+                  "    console.log('wordId = ' + data._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"term\": \"window\",\n    \"translation\": \"deraza\",\n    \"example\": \"Open the window.\",\n    \"lesson\": \"{{lessonId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/words",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "words"
+              ]
+            },
+            "description": "Yangi so'z. **Himoyalangan.**\n\n**Body:** `term`, `translation`, `lesson` (dars ID si) majburiy; `example` ixtiyoriy.\n\n> Avval \"Dars yaratish\" so'rovini yuboring — `{{lessonId}}` avtomatik to'ladi."
+          },
+          "response": []
+        },
+        {
+          "name": "So'zlar ro'yxati",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/words?page=1&limit=10&lesson=&search=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "words"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Sahifa raqami"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Sahifadagi elementlar soni (max 50)"
+                },
+                {
+                  "key": "lesson",
+                  "value": "",
+                  "description": "Dars ID si bo'yicha filtr"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "description": "So'z yoki tarjima bo'yicha qidiruv"
+                }
+              ]
+            },
+            "description": "So'zlar ro'yxati. Ochiq.\n\nQidiruv `$or` orqali ishlaydi — ham `term`, ham `translation` bo'yicha qidiradi. Ya'ni \"olma\" deb yozsangiz ham, \"apple\" deb yozsangiz ham topadi."
+          },
+          "response": []
+        },
+        {
+          "name": "Bitta so'z",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/words/{{wordId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "words",
+                "{{wordId}}"
+              ]
+            },
+            "description": "ID bo'yicha bitta so'z. `lesson` maydoni populate qilingan (dars nomi va darajasi bilan)."
+          },
+          "response": []
+        },
+        {
+          "name": "So'zni yangilash",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"translation\": \"oyna\",\n    \"example\": \"Close the window, please.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/words/{{wordId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "words",
+                "{{wordId}}"
+              ]
+            },
+            "description": "So'zni yangilash. **Himoyalangan** — faqat egasi yoki admin."
+          },
+          "response": []
+        },
+        {
+          "name": "So'zni o'chirish",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/words/{{wordId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "words",
+                "{{wordId}}"
+              ]
+            },
+            "description": "So'zni o'chirish. **Himoyalangan** — faqat egasi yoki admin."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Xatolik holatlari",
+      "item": [
+        {
+          "name": "401 — tokensiz so'rov",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('401 qaytdi', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Bu dars yaratilmasligi kerak\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/lessons",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "lessons"
+              ]
+            },
+            "description": "Himoyalangan manzilga tokensiz murojaat — `401` qaytishi kerak."
+          },
+          "response": []
+        },
+        {
+          "name": "404 — mavjud bo'lmagan manzil",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('404 qaytdi', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/mavjud-emas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mavjud-emas"
+              ]
+            },
+            "description": "`notFound` middleware'ini tekshiradi."
+          },
+          "response": []
+        },
+        {
+          "name": "409 — email band",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('409 qaytdi', function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Takroriy\",\n    \"email\": \"test@example.com\",\n    \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Seed'dagi mavjud email bilan ro'yxatdan o'tishga urinish — `409 Conflict`."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

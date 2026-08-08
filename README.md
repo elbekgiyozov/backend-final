@@ -193,6 +193,26 @@ BOT_WEBHOOK_DOMAIN=https://sizning-backend.onrender.com
 BOT_WEBHOOK_SECRET=tasodifiy_maxfiy_satr
 ```
 
+## 📮 Postman collection
+
+`backend/postman/` ichida ikkita fayl bor — Postman'da **Import** qiling:
+
+| Fayl | Nima |
+|---|---|
+| `TilOrgan.postman_collection.json` | 17 ta so'rov: Health, Auth, Lessons, Words, xatolik holatlari |
+| `TilOrgan.postman_environment.json` | `baseUrl`, `serverUrl`, `token`, `lessonId`, `wordId` |
+
+Ishlatish: environment'ni tanlang → **Auth → Login** (token avtomatik `{{token}}` ga saqlanadi)
+→ qolgan so'rovlarni yuboraverasiz. `Dars yaratish` / `So'z yaratish` esa ID'ni
+`{{lessonId}}` / `{{wordId}}` ga yozadi, shuning uchun GET/PUT/DELETE larni qo'lda tahrirlash shart emas.
+
+Papkalar yuqoridan pastga ketma-ket ishlatiladigan tartibda joylashgan
+(create → list → get → update → delete). Har bir so'rovda status kodlari va
+xatolik holatlari izohlangan.
+
+Deploy'dan keyin `baseUrl` va `serverUrl` ni live URL'ga almashtirsangiz,
+o'sha collection produksiyani ham tekshiradi.
+
 ## ✨ Xususiyatlar
 
 - ✅ JWT login/register, bcrypt hash
