@@ -6,7 +6,15 @@ Til o'rganish full-stack ilovasi (TTZ: React + Express + MongoDB).
 - `backend/` — Express API (ESM, `type: module`). Qatlamli: models / controllers / routes / middleware.
 - `backend/bot/` — Telegraf bot, server bilan bitta processda (`startBot(app)`).
   `instance.js` bot obyektini alohida eksport qiladi — `notify.js` bilan circular import bo'lmasligi uchun.
-- `frontend/` — Vite React + Tailwind. Auth va Theme `Context` orqali; API `src/api/axios.js` (token interceptor).
+- `frontend/` — Vite React + Tailwind. Holat **Zustand** orqali (`src/store/authStore.js`,
+  `themeStore.js`); API `src/api/axios.js` (token interceptor). Sahifalar `React.lazy` bilan
+  yuklanadi (`App.jsx` da `Suspense`). Route himoyasi: `ProtectedRoute`, `AdminRoute`.
+
+## Frontend konvensiyalari
+- Yangi global holat kerak bo'lsa — Context emas, `src/store/` ga Zustand store qo'shing.
+- Store'dan qiymatni tanlab oling: `useAuthStore((s) => s.user)` — butun store'ni emas.
+- Yangi sahifa qo'shganda `App.jsx` da `lazy()` bilan import qiling.
+- Gradient va emoji ishlatilmaydi — bir rangli fon va inline SVG ikonkalar.
 
 ## Modellar
 `User` → `Lesson` → `Word` (har biri `createdBy` ref bilan). CRUD egasi yoki admin tomonidan.

@@ -1,5 +1,14 @@
 // Umumiy kichik UI komponentlar
 
+// Lazy yuklanayotgan sahifa uchun fallback (App.jsx dagi Suspense)
+export function PageLoader() {
+  return (
+    <div className="flex justify-center py-20">
+      <Spinner className="h-8 w-8 text-indigo-600" />
+    </div>
+  );
+}
+
 export function Spinner({ className = "" }) {
   return (
     <span

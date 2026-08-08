@@ -1,10 +1,17 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { useTheme } from "../context/ThemeContext";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/authStore";
+import { useThemeStore } from "../store/themeStore";
+
+// Telegram bot havolasi — .env dan olinadi (TZ: bot havolasi saytda ko'rinsin)
+const BOT_URL = import.meta.env.VITE_BOT_URL || "https://t.me/backccbot";
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
-  const { dark, toggle } = useTheme();
+  // Har bir qiymatni alohida tanlaymiz — shunda faqat o'sha o'zgarganda
+  // komponent qayta render bo'ladi (Zustand'ning asosiy afzalligi).
+  const user = useAuthStore((s) => s.user);
+  const logout = useAuthStore((s) => s.logout);
+  const dark = useThemeStore((s) => s.dark);
+  const toggle = useThemeStore((s) => s.toggle);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -12,16 +19,54 @@ export default function Navbar() {
     navigate("/login");
   };
 
+  const linkCls = ({ isActive }) =>
+    `rounded-lg px-3 py-1.5 text-sm font-medium transition ${
+      isActive
+        ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-300"
+        : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+    }`;
+
   return (
-    <nav className="sticky top-0 z-10 border-b border-gray-200/70 bg-white/70 backdrop-blur-lg dark:border-gray-800/70 dark:bg-gray-950/70">
+    <nav className="sticky top-0 z-10 border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-        <Link to="/" className="flex items-center gap-2 text-lg font-bold">
-          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-600 text-base font-bold text-white">
-            T
-          </span>
-          <span className="text-indigo-600 dark:text-indigo-400">Tilim</span>
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link to="/" className="flex items-center gap-2 text-lg font-bold">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-600 text-base font-bold text-white">
+              T
+            </span>
+            <span className="text-indigo-600 dark:text-indigo-400">Tilim</span>
+          </Link>
+
+          {user && (
+            <div className="hidden items-center gap-1 sm:flex">
+              <NavLink to="/" className={linkCls} end>
+                Darslar
+              </NavLink>
+              <NavLink to="/profile" className={linkCls}>
+                Profil
+              </NavLink>
+              {/* Admin havolasi faqat adminlarga ko'rinadi */}
+              {user.role === "admin" && (
+                <NavLink to="/admin" className={linkCls}>
+                  Admin
+                </NavLink>
+              )}
+            </div>
+          )}
+        </div>
+
         <div className="flex items-center gap-2">
+          {/* Telegram bot havolasi */}
+          <a
+            href={BOT_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="hidden rounded-lg px-3 py-1.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 sm:block dark:text-gray-300 dark:hover:bg-gray-800"
+            title="Telegram bot"
+          >
+            Telegram bot
+          </a>
+
           <button
             onClick={toggle}
             className="rounded-xl p-2 text-gray-600 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
@@ -48,11 +93,16 @@ export default function Navbar() {
               )}
             </svg>
           </button>
+
           {user ? (
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-sm font-semibold text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300">
+              <Link
+                to="/profile"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-sm font-semibold text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300"
+                title={user.name}
+              >
                 {user.name?.[0]?.toUpperCase() || "U"}
-              </div>
+              </Link>
               <button
                 onClick={handleLogout}
                 className="rounded-xl px-3 py-1.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"

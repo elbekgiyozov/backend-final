@@ -106,3 +106,75 @@ export const login = async (req, res) => {
 export const getMe = async (req, res) => {
   res.json(req.user);
 };
+
+/**
+ * PUT /api/auth/me — o'z profilini tahrirlash (himoyalangan).
+ * Body: { name?, email?, password? } — faqat yuborilgan maydonlar o'zgaradi.
+ */
+export const updateMe = async (req, res) => {
+  try {
+    // Parolni ham o'zgartirish mumkin bo'lgani uchun uni ataylab so'raymiz
+    const user = await User.findById(req.user._id).select("+password");
+    if (!user) return res.status(404).json({ message: "Foydalanuvchi topilmadi" });
+
+    const { name, email, password } = req.body;
+
+    if (email !== undefined && email !== user.email) {
+      // Yangi email boshqa birovga tegishli emasligini tekshiramiz
+      const exists = await User.findOne({ email });
+      if (exists) return res.status(409).json({ message: "Bu email band" });
+      user.email = email;
+    }
+    if (name !== undefined) user.name = name;
+    // Parol o'zgarsa — modeldagi pre("save") hook uni avtomatik hash qiladi
+    if (password) user.password = password;
+
+    await user.save();
+
+    // Email o'zgargan bo'lishi mumkin, lekin token ichida faqat ID bor —
+    // shuning uchun eski token amal qilaveradi, yangisini berish shart emas.
+    //
+    // Javob GET /api/auth/me bilan bir xil shaklda bo'lishi kerak (createdAt ham),
+    // aks holda frontend saqlangan foydalanuvchi obyektidagi maydonlarni yo'qotadi.
+    const { password: _omit, ...safe } = user.toObject();
+    res.json(safe);
+  } catch (err) {
+    if (err.name === "ValidationError") {
+      const msg = Object.values(err.errors)[0].message;
+      return res.status(400).json({ message: msg });
+    }
+    res.status(500).json({ message: err.message });
+  }
+};
+
+/**
+ * GET /api/auth/users?page=&limit=&search= — foydalanuvchilar ro'yxati.
+ * Faqat adminlar uchun (protect + adminOnly).
+ */
+export const getUsers = async (req, res) => {
+  try {
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.min(50, parseInt(req.query.limit) || 10);
+    const skip = (page - 1) * limit;
+
+    const filter = {};
+    if (req.query.search) {
+      filter.$or = [
+        { name: { $regex: req.query.search, $options: "i" } },
+        { email: { $regex: req.query.search, $options: "i" } },
+      ];
+    }
+
+    const [items, total] = await Promise.all([
+      User.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
+      User.countDocuments(filter),
+    ]);
+
+    res.json({
+      data: items,
+      pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

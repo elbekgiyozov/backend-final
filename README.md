@@ -7,7 +7,7 @@ Foydalanuvchi darslar (Lesson) va so'zlar (Word) yaratadi, tahrirlaydi va o'chir
 
 | Qatlam | Texnologiya |
 |---|---|
-| Frontend | React (Vite) + Tailwind CSS + React Router + Axios |
+| Frontend | React (Vite) + Tailwind CSS + Zustand + React Router + Axios |
 | Backend | Node.js + Express.js |
 | Baza | MongoDB + Mongoose |
 | Auth | JWT + bcrypt |
@@ -38,9 +38,10 @@ Foydalanuvchi darslar (Lesson) va so'zlar (Word) yaratadi, tahrirlaydi va o'chir
 └── frontend/
     └── src/
         ├── api/axios.js       # token interceptor bilan
-        ├── context/           # AuthContext, ThemeContext (dark mode)
-        ├── components/        # Navbar, ProtectedRoute
-        └── pages/             # Login, Register, Lessons, LessonDetail
+        ├── store/             # Zustand: authStore, themeStore
+        ├── components/        # Navbar, ProtectedRoute, AdminRoute, ui
+        └── pages/             # Login, Register, Lessons, LessonDetail,
+                               # Profile, AdminDashboard (lazy yuklanadi)
 ```
 
 ## Kodni o'qish tartibi (backend'ni o'rganish uchun)
@@ -122,7 +123,7 @@ npm install
 npm run dev               # http://localhost:5173
 ```
 
-Seed'dan keyin test login: **test@example.com / 123456**
+Seed'dan keyin: **test@example.com / 123456** va **admin@tilim.uz / admin123**
 
 ## API Endpointlar
 
@@ -131,6 +132,9 @@ Seed'dan keyin test login: **test@example.com / 123456**
 | POST | `/api/auth/register` | — | Ro'yxatdan o'tish |
 | POST | `/api/auth/login` | — | Kirish (JWT) |
 | GET | `/api/auth/me` | token | Joriy foydalanuvchi |
+| PUT | `/api/auth/me` | token | Profilni tahrirlash (ism/email/parol) |
+| GET | `/api/auth/users?page=&limit=&search=` | admin | Foydalanuvchilar ro'yxati |
+| GET | `/api/stats` | admin | Dashboard ko'rsatkichlari |
 | GET | `/api/lessons?page=&limit=` | — | Darslar (pagination) |
 | GET | `/api/lessons/:id` | — | Bitta dars |
 | POST | `/api/lessons` | token | Dars yaratish |
@@ -202,7 +206,12 @@ BOT_WEBHOOK_SECRET=tasodifiy_maxfiy_satr
 | Telegram bot | [@backccbot](https://t.me/backccbot) |
 | Repozitoriya | https://github.com/elbekgiyozov/backend-final |
 
-Demo akkaunt: **test@example.com / 123456**
+Demo akkauntlar:
+
+| Rol | Email | Parol |
+|---|---|---|
+| Foydalanuvchi | `test@example.com` | `123456` |
+| Admin | `admin@tilim.uz` | `admin123` |
 
 ## Deploy
 
@@ -355,3 +364,9 @@ baseUrl   = https://backend-final-production-50fe.up.railway.app/api
 - Bonus: helmet + rate limiting
 - Telegraf bot: inline + reply keyboard, 3 ta wizard scene, ko'p admin, broadcast
 - Bot ↔ DB integratsiyasi (`BotUser` modeli, sayt akkauntiga bog'lash)
+- Zustand store'lari (`authStore`, `themeStore`) — Context o'rniga
+- Admin dashboard: statistika, daraja bo'yicha taqsimot, foydalanuvchilar jadvali
+- Profil sahifasi: ism/email/parolni tahrirlash
+- Lazy loading: har bir sahifa alohida chunk, `Suspense` fallback bilan
+- Real-time: admin dashboard har 15 soniyada polling qiladi
+- Telegram bot havolasi navbarda (`VITE_BOT_URL`)

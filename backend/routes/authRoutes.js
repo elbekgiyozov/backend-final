@@ -9,8 +9,8 @@
  * biznes-logika esa controller ichida bo'ladi. Shu tufayli kod tartibli qoladi.
  */
 import express from "express";
-import { register, login, getMe } from "../controllers/authController.js";
-import { protect } from "../middleware/auth.js";
+import { register, login, getMe, updateMe, getUsers } from "../controllers/authController.js";
+import { protect, adminOnly } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -19,7 +19,11 @@ router.post("/register", register);
 router.post("/login", login);
 
 // Himoyalangan — avval `protect` ishlaydi, u tokenni tekshiradi va
-// faqat muvaffaqiyatli bo'lsa `getMe` ga navbat beradi.
+// faqat muvaffaqiyatli bo'lsa keyingi funksiyaga navbat beradi.
 router.get("/me", protect, getMe);
+router.put("/me", protect, updateMe); // profilni tahrirlash
+
+// Faqat adminlar uchun — zanjirdagi ikkala middleware ham o'tishi kerak
+router.get("/users", protect, adminOnly, getUsers);
 
 export default router;

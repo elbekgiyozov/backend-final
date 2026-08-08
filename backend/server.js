@@ -29,6 +29,7 @@ import { notFound, errorHandler } from "./middleware/errorHandler.js";
 import authRoutes from "./routes/authRoutes.js";
 import lessonRoutes from "./routes/lessonRoutes.js";
 import wordRoutes from "./routes/wordRoutes.js";
+import statsRoutes from "./routes/statsRoutes.js";
 import { startBot } from "./bot/index.js";
 
 // Bazaga ulanmasdan turib serverni ko'tarishning ma'nosi yo'q —
@@ -95,6 +96,7 @@ app.get("/", (req, res) => res.json({ status: "ok", service: "tilim API" }));
 app.use("/api/auth", authRoutes);
 app.use("/api/lessons", lessonRoutes);
 app.use("/api/words", wordRoutes);
+app.use("/api/stats", statsRoutes);
 
 // Telegram bot — server bilan bitta processda (webhook rejimida bot o'z
 // route'ini shu `app` ga qo'shadi, shuning uchun notFound'dan OLDIN turadi).

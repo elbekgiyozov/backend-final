@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
-import { useAuth } from "../context/AuthContext";
+import { useAuthStore } from "../store/authStore";
 import { Alert, LevelBadge, Spinner } from "../components/ui";
 
 const LEVELS = [
@@ -11,7 +11,7 @@ const LEVELS = [
 ];
 
 export default function Lessons() {
-  const { user } = useAuth();
+  const user = useAuthStore((s) => s.user);
   const [lessons, setLessons] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1 });
   const [loading, setLoading] = useState(true);

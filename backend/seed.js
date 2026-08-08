@@ -34,6 +34,14 @@ const run = async () => {
     password: "123456",
   });
 
+  // Admin dashboard'ni sinash uchun alohida akkaunt
+  await User.create({
+    name: "Admin",
+    email: "admin@tilim.uz",
+    password: "admin123",
+    role: "admin",
+  });
+
   // Dars foydalanuvchiga bog'lanadi (createdBy)
   const lesson = await Lesson.create({
     title: "Boshlang'ich inglizcha so'zlar",
@@ -49,7 +57,9 @@ const run = async () => {
     { term: "water", translation: "suv", example: "I drink water.", lesson: lesson._id, createdBy: user._id },
   ]);
 
-  console.log("Seed tayyor. Login: test@example.com / 123456");
+  console.log("Seed tayyor.");
+  console.log("  Foydalanuvchi: test@example.com / 123456");
+  console.log("  Admin:         admin@tilim.uz / admin123");
 
   // Ulanishni yopamiz, aks holda skript tugamay osilib turadi
   await mongoose.connection.close();

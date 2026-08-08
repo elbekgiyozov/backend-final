@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuthStore } from "../store/authStore";
 import AuthLayout from "../components/AuthLayout";
 import { Alert, Field, Spinner } from "../components/ui";
 
 export default function Register() {
-  const { register, loading, error, setError } = useAuth();
+  const register = useAuthStore((s) => s.register);
+  const loading = useAuthStore((s) => s.loading);
+  const error = useAuthStore((s) => s.error);
+  const setError = useAuthStore((s) => s.setError);
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [fieldErr, setFieldErr] = useState({});
