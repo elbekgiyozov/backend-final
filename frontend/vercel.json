@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "comment": "SPA fallback: /login, /lessons/:id kabi manzillar ham index.html ga yo'naltiriladi, aks holda 404 chiqadi (routing React Router tomonida)",
+      "source": "/((?!assets/).*)",
+      "destination": "/index.html"
+    }
+  ]
+}
