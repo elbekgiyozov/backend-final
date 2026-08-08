@@ -14,7 +14,7 @@ export const connectDB = async () => {
   const uri = process.env.MONGO_URI;
 
   if (!uri) {
-    console.error("❌ MONGO_URI .env faylida ko'rsatilmagan");
+    console.error("MONGO_URI .env faylida ko'rsatilmagan");
     // process.exit(1) — dasturni xatolik kodi bilan to'xtatadi.
     // Bazasiz server ishlay olmaydi, shuning uchun darhol to'xtaymiz.
     process.exit(1);
@@ -23,10 +23,10 @@ export const connectDB = async () => {
   try {
     // mongoose.connect — asinxron amal, ulanish tugashini kutamiz.
     const conn = await mongoose.connect(uri);
-    console.log(`✅ MongoDB ulandi: ${conn.connection.host}`);
+    console.log(`MongoDB ulandi: ${conn.connection.host}`);
   } catch (err) {
     // Noto'g'ri parol, internet yo'qligi, IP whitelist'da yo'qligi va h.k.
-    console.error(`❌ MongoDB ulanish xatosi: ${err.message}`);
+    console.error(`MongoDB ulanish xatosi: ${err.message}`);
     process.exit(1);
   }
 };

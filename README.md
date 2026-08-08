@@ -1,9 +1,9 @@
-# 📚 Tilim — Til o'rganish ilovasi
+# Tilim — Til o'rganish ilovasi
 
 Full-stack til o'rganish platformasi: **React + Express + MongoDB**, JWT autentifikatsiya bilan.
 Foydalanuvchi darslar (Lesson) va so'zlar (Word) yaratadi, tahrirlaydi va o'chiradi.
 
-## 🧱 Texnologiyalar
+## Texnologiyalar
 
 | Qatlam | Texnologiya |
 |---|---|
@@ -14,7 +14,7 @@ Foydalanuvchi darslar (Lesson) va so'zlar (Word) yaratadi, tahrirlaydi va o'chir
 | Telegram bot | Telegraf.js (server bilan bitta processda) |
 | Xavfsizlik | helmet, express-rate-limit |
 
-## 📁 Tuzilma
+## Tuzilma
 
 ```
 .
@@ -43,7 +43,7 @@ Foydalanuvchi darslar (Lesson) va so'zlar (Word) yaratadi, tahrirlaydi va o'chir
         └── pages/             # Login, Register, Lessons, LessonDetail
 ```
 
-## 🗺 Kodni o'qish tartibi (backend'ni o'rganish uchun)
+## Kodni o'qish tartibi (backend'ni o'rganish uchun)
 
 Barcha backend fayllari batafsil o'zbekcha kommentlar bilan izohlangan.
 Tavsiya etilgan o'qish ketma-ketligi:
@@ -65,7 +65,7 @@ Qatlamlar mas'uliyati:
 **route** — manzil, **controller** — biznes-logika, **model** — ma'lumot tuzilishi,
 **middleware** — har so'rov o'tadigan umumiy tekshiruvlar.
 
-## 🚀 Ishga tushirish
+## Ishga tushirish
 
 ### 0. MongoDB (lokal, o'rnatishsiz)
 
@@ -124,25 +124,25 @@ npm run dev               # http://localhost:5173
 
 Seed'dan keyin test login: **test@example.com / 123456**
 
-## 🌐 API Endpointlar
+## API Endpointlar
 
 | Method | Endpoint | Auth | Izoh |
 |---|---|:---:|---|
 | POST | `/api/auth/register` | — | Ro'yxatdan o'tish |
 | POST | `/api/auth/login` | — | Kirish (JWT) |
-| GET | `/api/auth/me` | ✅ | Joriy foydalanuvchi |
+| GET | `/api/auth/me` | token | Joriy foydalanuvchi |
 | GET | `/api/lessons?page=&limit=` | — | Darslar (pagination) |
 | GET | `/api/lessons/:id` | — | Bitta dars |
-| POST | `/api/lessons` | ✅ | Dars yaratish |
-| PUT | `/api/lessons/:id` | ✅ | Yangilash |
-| DELETE | `/api/lessons/:id` | ✅ | O'chirish |
+| POST | `/api/lessons` | token | Dars yaratish |
+| PUT | `/api/lessons/:id` | token | Yangilash |
+| DELETE | `/api/lessons/:id` | token | O'chirish |
 | GET | `/api/words?lesson=&page=&limit=` | — | So'zlar (pagination) |
 | GET | `/api/words/:id` | — | Bitta so'z |
-| POST | `/api/words` | ✅ | So'z yaratish |
-| PUT | `/api/words/:id` | ✅ | Yangilash |
-| DELETE | `/api/words/:id` | ✅ | O'chirish |
+| POST | `/api/words` | token | So'z yaratish |
+| PUT | `/api/words/:id` | token | Yangilash |
+| DELETE | `/api/words/:id` | token | O'chirish |
 
-## 🤖 Telegram bot
+## Telegram bot
 
 Bot backend server bilan **bitta processda** ishlaydi (`server.js` → `startBot(app)`).
 `BOT_WEBHOOK_DOMAIN` berilsa — webhook (produksiya), aks holda long polling (lokal).
@@ -176,7 +176,7 @@ Bot backend server bilan **bitta processda** ishlaydi (`server.js` → `startBot
    npm run make-admin              # bot foydalanuvchilari ro'yxati
    npm run make-admin -- 12345678  # shu ID ni admin qilish
    ```
-3. Yoki admin panel → 🛡 Adminlar → ➕ Admin qo'shish (ID/@username orqali).
+3. Yoki admin panel → Adminlar → Admin qo'shish (ID/@username orqali).
 4. Yoki sayt akkauntida `role: "admin"` bo'lsa — `/link` dan keyin avtomatik admin.
 
 ### Avtomatik xabarlar
@@ -193,7 +193,7 @@ BOT_WEBHOOK_DOMAIN=https://sizning-backend.onrender.com
 BOT_WEBHOOK_SECRET=tasodifiy_maxfiy_satr
 ```
 
-## 📮 Postman collection
+## Postman collection
 
 `backend/postman/` ichida ikkita fayl bor — Postman'da **Import** qiling:
 
@@ -213,14 +213,14 @@ xatolik holatlari izohlangan.
 Deploy'dan keyin `baseUrl` va `serverUrl` ni live URL'ga almashtirsangiz,
 o'sha collection produksiyani ham tekshiradi.
 
-## ✨ Xususiyatlar
+## Xususiyatlar
 
-- ✅ JWT login/register, bcrypt hash
-- ✅ Protected routes (frontend + backend)
-- ✅ 3 model: User, Lesson, Word
-- ✅ To'liq CRUD + pagination
-- ✅ Middleware: auth, logger, error handler
-- ✅ Dark mode, Loading/Error holatlari, form validatsiya
-- ✅ Bonus: helmet + rate limiting
-- ✅ Telegraf bot: inline + reply keyboard, 3 ta wizard scene, ko'p admin, broadcast
-- ✅ Bot ↔ DB integratsiyasi (`BotUser` modeli, sayt akkauntiga bog'lash)
+- JWT login/register, bcrypt hash
+- Protected routes (frontend + backend)
+- 3 model: User, Lesson, Word
+- To'liq CRUD + pagination
+- Middleware: auth, logger, error handler
+- Dark mode, Loading/Error holatlari, form validatsiya
+- Bonus: helmet + rate limiting
+- Telegraf bot: inline + reply keyboard, 3 ta wizard scene, ko'p admin, broadcast
+- Bot ↔ DB integratsiyasi (`BotUser` modeli, sayt akkauntiga bog'lash)

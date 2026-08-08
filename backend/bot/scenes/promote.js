@@ -2,7 +2,7 @@
  * bot/scenes/promote.js — yangi admin qo'shish wizard'i.
  *
  * TZ ning "bir nechta admin foydalanuvchilarni boshqarish" talabini bajaradi.
- * Admin panel → 🛡 Adminlar → ➕ Admin qo'shish orqali chaqiriladi.
+ * Admin panel → Adminlar → Admin qo'shish orqali chaqiriladi.
  *
  * MUHIM cheklov: odam avval botga /start bergan bo'lishi kerak.
  * Sabab — Telegram botlarga o'zi yozmagan odamga xabar yuborishga ruxsat bermaydi,
@@ -18,7 +18,7 @@ export const promoteScene = new Scenes.WizardScene(
   /* ---------------------- 1-qadam: ID yoki username so'rash -------------- */
   (ctx) => {
     ctx.reply(
-      "🛡 Yangi adminning Telegram ID raqamini yoki @username'ini yuboring (/cancel — bekor).\n" +
+      "Yangi adminning Telegram ID raqamini yoki @username'ini yuboring (/cancel — bekor).\n" +
         "Eslatma: foydalanuvchi avval botga /start bergan bo'lishi kerak."
     );
     return ctx.wizard.next();
@@ -28,7 +28,7 @@ export const promoteScene = new Scenes.WizardScene(
   async (ctx) => {
     const input = ctx.message?.text?.trim();
     if (!input) {
-      ctx.reply("❌ ID yoki @username yuboring:");
+      ctx.reply("ID yoki @username yuboring:");
       return;
     }
 
@@ -40,7 +40,7 @@ export const promoteScene = new Scenes.WizardScene(
 
     const target = await BotUser.findOne(query);
     if (!target) {
-      await ctx.reply("❌ Bunday foydalanuvchi topilmadi (botga /start berganmi?).");
+      await ctx.reply("Bunday foydalanuvchi topilmadi (botga /start berganmi?).");
       return ctx.scene.leave();
     }
 
@@ -50,7 +50,7 @@ export const promoteScene = new Scenes.WizardScene(
     // Yangilangan adminlar ro'yxatini darhol ko'rsatamiz
     const admins = await BotUser.find({ isAdmin: true });
     await ctx.reply(
-      `✅ ${target.firstName || target.username || target.telegramId} admin qilindi.`,
+      `${target.firstName || target.username || target.telegramId} admin qilindi.`,
       adminsKeyboard(admins)
     );
     return ctx.scene.leave();

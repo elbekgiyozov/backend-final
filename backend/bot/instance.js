@@ -18,5 +18,5 @@ const token = process.env.BOT_TOKEN;
 export const bot = token ? new Telegraf(token) : null;
 
 if (!token) {
-  console.warn("⚠️  BOT_TOKEN topilmadi — Telegram bot o'chirilgan holatda ishga tushdi");
+  console.warn(" BOT_TOKEN topilmadi — Telegram bot o'chirilgan holatda ishga tushdi");
 }

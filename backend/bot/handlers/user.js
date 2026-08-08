@@ -24,7 +24,7 @@ const PAGE_SIZE = 5;
  */
 const helpText = (isAdmin) => {
   const base = [
-    "<b>📋 Mavjud buyruqlar</b>",
+    "<b>Mavjud buyruqlar</b>",
     "",
     "/start — botni ishga tushirish",
     "/help — shu ro'yxat",
@@ -37,7 +37,7 @@ const helpText = (isAdmin) => {
   if (isAdmin) {
     base.push(
       "",
-      "<b>🛠 Admin buyruqlari</b>",
+      "<b>Admin buyruqlari</b>",
       "/admin — admin panel",
       "/stats — statistika",
       "/users — foydalanuvchilar ro'yxati",
@@ -52,7 +52,7 @@ const helpText = (isAdmin) => {
 /**
  * Darslar sahifasini tayyorlaydi: matn + inline tugmalar.
  * Alohida funksiyaga chiqarilgan, chunki u ikki joyda kerak:
- * /lessons buyrug'ida (yangi xabar) va ⬅️➡️ tugmalarida (mavjud xabarni tahrirlash).
+ * /lessons buyrug'ida (yangi xabar) vatugmalarida (mavjud xabarni tahrirlash).
  */
 const lessonsPage = async (page) => {
   const total = await Lesson.countDocuments();
@@ -67,8 +67,8 @@ const lessonsPage = async (page) => {
     .limit(PAGE_SIZE);
 
   const text = total
-    ? `📚 <b>Darslar</b> (jami ${total} ta)\nKerakli darsni tanlang:`
-    : "📭 Hozircha darslar yo'q.";
+    ? `<b>Darslar</b> (jami ${total} ta)\nKerakli darsni tanlang:`
+    : "Hozircha darslar yo'q.";
 
   return { text, keyboard: lessonsKeyboard(lessons, safePage, totalPages) };
 };
@@ -84,7 +84,7 @@ export const registerUserHandlers = (bot) => {
     const name = ctx.from.first_name || "do'stim";
     // replyWithHTML — reply(text, { parse_mode: "HTML" }) ning qisqa shakli
     await ctx.replyWithHTML(
-      `👋 Assalomu alaykum, <b>${name}</b>!\n\n` +
+      `Assalomu alaykum, <b>${name}</b>!\n\n` +
         "Bu — <b>Tilim</b> platformasining rasmiy boti. Bu yerda darslar va so'zlar bilan tanishishingiz, " +
         "sayt akkauntingizni bog'lab profilingizni ko'rishingiz mumkin.\n\n" +
         "Boshlash uchun pastdagi menyudan foydalaning yoki /help ni bosing.",
@@ -96,7 +96,7 @@ export const registerUserHandlers = (bot) => {
   /* -------------------------------- /help -------------------------------- */
   bot.help((ctx) => ctx.replyWithHTML(helpText(ctx.state.isAdmin), mainMenu(ctx.state.isAdmin)));
   // Xuddi shu ish reply keyboard tugmasi bosilganda ham bajarilsin
-  bot.hears("ℹ️ Yordam", (ctx) => ctx.replyWithHTML(helpText(ctx.state.isAdmin)));
+  bot.hears("Yordam", (ctx) => ctx.replyWithHTML(helpText(ctx.state.isAdmin)));
 
   /* -------------------------------- /info -------------------------------- */
   // Funksiyani o'zgaruvchiga olamiz, chunki u ham buyruq, ham tugma uchun kerak
@@ -105,12 +105,12 @@ export const registerUserHandlers = (bot) => {
     const bu = ctx.state.botUser;
 
     const lines = [
-      "<b>👤 Profil</b>",
+      "<b>Profil</b>",
       `Telegram: ${bu.firstName} ${bu.lastName}`.trim(),
       `Username: ${bu.username ? "@" + bu.username : "—"}`,
       // <code> — bosilganda nusxa oladigan format (ID ni ko'chirish qulay bo'lsin)
       `Telegram ID: <code>${bu.telegramId}</code>`,
-      `Rol: ${ctx.state.isAdmin ? "admin 🛡" : "foydalanuvchi"}`,
+      `Rol: ${ctx.state.isAdmin ? "admin" : "foydalanuvchi"}`,
     ];
 
     if (bu.user) {
@@ -122,20 +122,20 @@ export const registerUserHandlers = (bot) => {
       ]);
       lines.push(
         "",
-        "<b>🔗 Sayt akkaunti</b>",
+        "<b>Sayt akkaunti</b>",
         `Ism: ${bu.user.name}`,
         `Email: ${bu.user.email}`,
         `Darslari: ${lessons} ta | So'zlari: ${words} ta`
       );
     } else {
-      lines.push("", "🔗 Sayt akkaunti bog'lanmagan — /link");
+      lines.push("", "Sayt akkaunti bog'lanmagan — /link");
     }
 
     return ctx.replyWithHTML(lines.join("\n"));
   };
 
   bot.command("info", info);
-  bot.hears("👤 Profil", info);
+  bot.hears("Profil", info);
 
   /* ------------------------ /lessons (darslar ro'yxati) ------------------ */
   const lessons = async (ctx) => {
@@ -146,7 +146,7 @@ export const registerUserHandlers = (bot) => {
   // Massiv — bitta handler bir nechta buyruq nomiga javob beradi.
   // TZ da "/products yoki /items" talab qilingan, biz ikkalasini ham qo'shdik.
   bot.command(["lessons", "items", "products"], lessons);
-  bot.hears("📚 Darslar", lessons);
+  bot.hears("Darslar", lessons);
 
   /**
    * Sahifalash tugmalari: callback_data "lessons:2" ko'rinishida keladi.
@@ -171,11 +171,11 @@ export const registerUserHandlers = (bot) => {
     await ctx.answerCbQuery();
 
     const lesson = await Lesson.findById(ctx.match[1]).populate("createdBy", "name");
-    if (!lesson) return ctx.editMessageText("❌ Dars topilmadi.");
+    if (!lesson) return ctx.editMessageText("Dars topilmadi.");
 
     const count = await Word.countDocuments({ lesson: lesson._id });
     const text =
-      `📖 <b>${lesson.title}</b>\n\n` +
+      `<b>${lesson.title}</b>\n\n` +
       `${lesson.description || "Tavsif yo'q"}\n\n` +
       `Daraja: <b>${lesson.level}</b>\n` +
       `So'zlar: <b>${count}</b> ta\n` +
@@ -194,12 +194,12 @@ export const registerUserHandlers = (bot) => {
     const words = await Word.find({ lesson: ctx.match[1] }).limit(30);
 
     const text = words.length
-      ? "🔤 <b>So'zlar</b>\n\n" +
+      ? "<b>So'zlar</b>\n\n" +
         words
           // map ikkinchi argumenti — indeks (0 dan), shuning uchun i + 1
           .map((w, i) => `${i + 1}. <b>${w.term}</b> — ${w.translation}` + (w.example ? `\n   <i>${w.example}</i>` : ""))
           .join("\n")
-      : "📭 Bu darsda hali so'zlar yo'q.";
+      : "Bu darsda hali so'zlar yo'q.";
 
     await ctx
       .editMessageText(text, { parse_mode: "HTML", ...lessonKeyboard(ctx.match[1]) })
@@ -214,11 +214,11 @@ export const registerUserHandlers = (bot) => {
   // scene.enter("link") — foydalanuvchini "link" wizard'iga kiritadi.
   // Undan keyingi xabarlari shu scene ichida qayta ishlanadi (scenes/link.js ga qarang).
   bot.command("link", (ctx) => ctx.scene.enter("link"));
-  bot.hears("🔗 Akkaunt bog'lash", (ctx) => ctx.scene.enter("link"));
+  bot.hears("Akkaunt bog'lash", (ctx) => ctx.scene.enter("link"));
 
   bot.command("unlink", async (ctx) => {
     ctx.state.botUser.user = null; // bog'lanishni uzamiz
     await ctx.state.botUser.save(); // va bazaga yozamiz
-    await ctx.reply("🔓 Sayt akkaunti bog'lanmadi qilindi.", mainMenu(ctx.state.isAdmin));
+    await ctx.reply("Sayt akkaunti bog'lanmadi qilindi.", mainMenu(ctx.state.isAdmin));
   });
 };

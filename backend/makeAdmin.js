@@ -24,13 +24,13 @@ const run = async () => {
   if (!input) {
     const users = await BotUser.find().sort({ createdAt: -1 }).limit(20);
     if (!users.length) {
-      console.log("📭 Bot foydalanuvchilari yo'q. Avval @backccbot ga /start yuboring.");
+      console.log("Bot foydalanuvchilari yo'q. Avval @backccbot ga /start yuboring.");
     } else {
-      console.log("👥 Bot foydalanuvchilari:\n");
+      console.log("Bot foydalanuvchilari:\n");
       for (const u of users) {
         const name = [u.firstName, u.lastName].filter(Boolean).join(" ") || "—";
         const tag = u.username ? `@${u.username}` : "—";
-        console.log(`  ${u.telegramId}\t${name}\t${tag}\t${u.isAdmin ? "🛡 admin" : ""}`);
+        console.log(`  ${u.telegramId}\t${name}\t${tag}\t${u.isAdmin ? "admin" : ""}`);
       }
       console.log("\nAdmin qilish: npm run make-admin -- <ID>");
     }
@@ -45,7 +45,7 @@ const run = async () => {
 
   const user = await BotUser.findOne(query);
   if (!user) {
-    console.error(`❌ "${input}" topilmadi. Avval botga /start yuborilganini tekshiring.`);
+    console.error(`"${input}" topilmadi. Avval botga /start yuborilganini tekshiring.`);
     await mongoose.connection.close();
     process.exit(1);
   }
@@ -53,7 +53,7 @@ const run = async () => {
   user.isAdmin = true;
   await user.save();
 
-  console.log(`✅ ${user.firstName || user.username || user.telegramId} endi admin.`);
+  console.log(`${user.firstName || user.username || user.telegramId} endi admin.`);
   console.log("   Botda /admin buyrug'ini sinab ko'ring (serverni qayta ishga tushirish shart emas).");
 
   await mongoose.connection.close();

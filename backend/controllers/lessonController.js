@@ -94,7 +94,7 @@ export const createLesson = async (req, res) => {
 
     // Adminlarga bot orqali xabar (javobni kutmasdan)
     notifyAdmins(
-      `📚 <b>Yangi dars</b>\n\nNomi: ${lesson.title}\nDaraja: ${lesson.level}\nMuallif: ${req.user.name}`
+      `<b>Yangi dars</b>\n\nNomi: ${lesson.title}\nDaraja: ${lesson.level}\nMuallif: ${req.user.name}`
     ).catch(() => {});
 
     res.status(201).json(lesson);

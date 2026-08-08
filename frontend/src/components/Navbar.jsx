@@ -16,20 +16,37 @@ export default function Navbar() {
     <nav className="sticky top-0 z-10 border-b border-gray-200/70 bg-white/70 backdrop-blur-lg dark:border-gray-800/70 dark:bg-gray-950/70">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
         <Link to="/" className="flex items-center gap-2 text-lg font-bold">
-          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-base shadow-md shadow-indigo-500/30">
-            📚
+          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-600 text-base font-bold text-white">
+            T
           </span>
-          <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent dark:from-indigo-400 dark:to-purple-400">
-            Tilim
-          </span>
+          <span className="text-indigo-600 dark:text-indigo-400">Tilim</span>
         </Link>
         <div className="flex items-center gap-2">
           <button
             onClick={toggle}
             className="rounded-xl p-2 text-gray-600 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
             title="Mavzuni almashtirish"
+            aria-label="Mavzuni almashtirish"
           >
-            {dark ? "☀️" : "🌙"}
+            {/* Quyosh / oy ikonkasi — emoji o'rniga inline SVG */}
+            <svg
+              viewBox="0 0 24 24"
+              className="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              {dark ? (
+                <>
+                  <circle cx="12" cy="12" r="4" />
+                  <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+                </>
+              ) : (
+                <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8" />
+              )}
+            </svg>
           </button>
           {user ? (
             <div className="flex items-center gap-2">

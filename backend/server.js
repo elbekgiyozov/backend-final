@@ -91,4 +91,4 @@ app.use(errorHandler);
 
 /* ----------------------------- 4. Serverni ishga tushirish ---------------- */
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server ${PORT}-portda ishga tushdi`));
+app.listen(PORT, () => console.log(`Server ${PORT}-portda ishga tushdi`));

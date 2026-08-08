@@ -5,7 +5,7 @@
  *
  * 1) Reply keyboard (Markup.keyboard) — chat pastida, klaviatura o'rnida chiqadi.
  *    Bosilganda oddiy MATNLI XABAR yuboradi. Shuning uchun kodda
- *    bot.hears("📚 Darslar", ...) orqali ushlanadi. Doimiy menyu uchun qulay.
+ *    bot.hears("Darslar", ...) orqali ushlanadi. Doimiy menyu uchun qulay.
  *
  * 2) Inline keyboard (Markup.inlineKeyboard) — xabarning O'ZIGA yopishgan tugmalar.
  *    Bosilganda callback_data yuboradi (foydalanuvchiga ko'rinmaydi) va
@@ -23,11 +23,11 @@ import { Markup } from "telegraf";
  */
 export const mainMenu = (isAdmin = false) => {
   const rows = [
-    ["📚 Darslar", "👤 Profil"],
-    ["🔗 Akkaunt bog'lash", "ℹ️ Yordam"],
+    ["Darslar", "Profil"],
+    ["Akkaunt bog'lash", "Yordam"],
   ];
   // Admin panel tugmasi faqat adminlarga ko'rinadi
-  if (isAdmin) rows.push(["🛠 Admin panel"]);
+  if (isAdmin) rows.push(["Admin panel"]);
   return Markup.keyboard(rows).resize();
 };
 
@@ -40,14 +40,14 @@ export const mainMenu = (isAdmin = false) => {
 export const adminMenu = () =>
   Markup.inlineKeyboard([
     [
-      Markup.button.callback("📊 Statistika", "admin:stats"),
-      Markup.button.callback("👥 Foydalanuvchilar", "admin:users:1"), // 1 — sahifa raqami
+      Markup.button.callback("Statistika", "admin:stats"),
+      Markup.button.callback("Foydalanuvchilar", "admin:users:1"), // 1 — sahifa raqami
     ],
     [
-      Markup.button.callback("📣 Broadcast", "admin:broadcast"),
-      Markup.button.callback("🛡 Adminlar", "admin:admins"),
+      Markup.button.callback("Broadcast", "admin:broadcast"),
+      Markup.button.callback("Adminlar", "admin:admins"),
     ],
-    [Markup.button.callback("❌ Yopish", "admin:close")],
+    [Markup.button.callback("Yopish", "admin:close")],
   ]);
 
 /**
@@ -59,15 +59,15 @@ export const adminMenu = () =>
 export const lessonsKeyboard = (lessons, page, totalPages) => {
   // Har bir dars alohida qatorda. .slice(0, 60) — juda uzun nom tugmani buzmasligi uchun.
   const rows = lessons.map((l) => [
-    Markup.button.callback(`📖 ${l.title}`.slice(0, 60), `lesson:${l._id}`),
+    Markup.button.callback(`${l.title}`.slice(0, 60), `lesson:${l._id}`),
   ]);
 
-  // Navigatsiya qatori: ⬅️  2/5  ➡️
+  // Navigatsiya qatori:  2/5 
   const nav = [];
-  if (page > 1) nav.push(Markup.button.callback("⬅️", `lessons:${page - 1}`));
+  if (page > 1) nav.push(Markup.button.callback("Oldingi", `lessons:${page - 1}`));
   // "noop" — hech narsa qilmaydigan tugma (faqat sahifa raqamini ko'rsatadi)
   if (totalPages > 1) nav.push(Markup.button.callback(`${page}/${totalPages}`, "noop"));
-  if (page < totalPages) nav.push(Markup.button.callback("➡️", `lessons:${page + 1}`));
+  if (page < totalPages) nav.push(Markup.button.callback("Keyingi", `lessons:${page + 1}`));
   if (nav.length) rows.push(nav);
 
   return Markup.inlineKeyboard(rows);
@@ -76,8 +76,8 @@ export const lessonsKeyboard = (lessons, page, totalPages) => {
 /** Bitta dars ichidagi tugmalar: so'zlarni ko'rish yoki ro'yxatga qaytish */
 export const lessonKeyboard = (lessonId, page = 1) =>
   Markup.inlineKeyboard([
-    [Markup.button.callback("🔤 So'zlar", `words:${lessonId}`)],
-    [Markup.button.callback("⬅️ Darslarga qaytish", `lessons:${page}`)],
+    [Markup.button.callback("So'zlar", `words:${lessonId}`)],
+    [Markup.button.callback("Darslarga qaytish", `lessons:${page}`)],
   ]);
 
 /**
@@ -88,12 +88,12 @@ export const adminsKeyboard = (admins) => {
   const rows = admins.map((a) => [
     Markup.button.callback(
       // Ism bo'lmasa username, u ham bo'lmasa ID ko'rsatiladi
-      `➖ ${a.firstName || a.username || a.telegramId}`,
+      `Olib tashlash: ${a.firstName || a.username || a.telegramId}`,
       `admin:demote:${a.telegramId}`
     ),
   ]);
-  rows.push([Markup.button.callback("➕ Admin qo'shish", "admin:promote")]);
-  rows.push([Markup.button.callback("⬅️ Orqaga", "admin:panel")]);
+  rows.push([Markup.button.callback("Admin qo'shish", "admin:promote")]);
+  rows.push([Markup.button.callback("Orqaga", "admin:panel")]);
   return Markup.inlineKeyboard(rows);
 };
 
@@ -104,5 +104,5 @@ export const adminsKeyboard = (admins) => {
  */
 export const confirmKeyboard = (yes, no = "cancel") =>
   Markup.inlineKeyboard([
-    [Markup.button.callback("✅ Ha, yuborish", yes), Markup.button.callback("❌ Bekor", no)],
+    [Markup.button.callback("Ha, yuborish", yes), Markup.button.callback("Bekor", no)],
   ]);

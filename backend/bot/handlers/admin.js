@@ -16,7 +16,7 @@ import { Markup } from "telegraf";
 const PAGE_SIZE = 8; // bitta sahifada nechta foydalanuvchi
 
 /**
- * Statistika matni — /stats buyrug'i va "📊 Statistika" tugmasi uchun.
+ * Statistika matni — /stats buyrug'i va "Statistika" tugmasi uchun.
  * Barcha hisoblar Promise.all bilan PARALLEL bajariladi: 7 ta so'rovni
  * ketma-ket kutish o'rniga, eng sekinigacha ketgan vaqt sarflanadi.
  */
@@ -35,16 +35,16 @@ const statsText = async () => {
   ]);
 
   return [
-    "<b>📊 Umumiy statistika</b>",
+    "<b>Umumiy statistika</b>",
     "",
-    `👤 Sayt foydalanuvchilari: <b>${users}</b>`,
-    `🆕 Oxirgi 24 soatda: <b>${newUsers}</b>`,
-    `📚 Darslar: <b>${lessons}</b>`,
-    `🔤 So'zlar: <b>${words}</b>`,
+    `Sayt foydalanuvchilari: <b>${users}</b>`,
+    `Oxirgi 24 soatda: <b>${newUsers}</b>`,
+    `Darslar: <b>${lessons}</b>`,
+    `So'zlar: <b>${words}</b>`,
     "",
-    `🤖 Bot foydalanuvchilari: <b>${botUsers}</b>`,
-    `🔗 Akkaunti bog'langan: <b>${linked}</b>`,
-    `🚫 Botni bloklaganlar: <b>${blocked}</b>`,
+    `Bot foydalanuvchilari: <b>${botUsers}</b>`,
+    `Akkaunti bog'langan: <b>${linked}</b>`,
+    `Botni bloklaganlar: <b>${blocked}</b>`,
   ].join("\n");
 };
 
@@ -68,35 +68,35 @@ const usersPage = async (page) => {
     // filter(Boolean) — bo'sh qiymatlarni tashlaydi, keyin bo'shliq bilan qo'shadi
     const name = [u.firstName, u.lastName].filter(Boolean).join(" ") || "—";
     const tag = u.username ? ` @${u.username}` : "";
-    const link = u.user ? ` | 🔗 ${u.user.email}` : "";
-    const flag = isAdmin(u) ? " 🛡" : "";
+    const link = u.user ? ` | ${u.user.email}` : "";
+    const flag = isAdmin(u) ? "" : "";
     return `${n}. <b>${name}</b>${tag}${flag}\n   <code>${u.telegramId}</code>${link}`;
   });
 
   const text = total
-    ? `<b>👥 Foydalanuvchilar</b> (jami ${total} ta)\n\n${rows.join("\n")}`
-    : "📭 Bot foydalanuvchilari yo'q.";
+    ? `<b>Foydalanuvchilar</b> (jami ${total} ta)\n\n${rows.join("\n")}`
+    : "Bot foydalanuvchilari yo'q.";
 
   // Navigatsiya tugmalari — faqat kerak bo'lganda qo'shiladi
   const nav = [];
-  if (safePage > 1) nav.push(Markup.button.callback("⬅️", `admin:users:${safePage - 1}`));
+  if (safePage > 1) nav.push(Markup.button.callback("Oldingi", `admin:users:${safePage - 1}`));
   nav.push(Markup.button.callback(`${safePage}/${totalPages}`, "noop"));
-  if (safePage < totalPages) nav.push(Markup.button.callback("➡️", `admin:users:${safePage + 1}`));
+  if (safePage < totalPages) nav.push(Markup.button.callback("Keyingi", `admin:users:${safePage + 1}`));
 
   return {
     text,
-    keyboard: Markup.inlineKeyboard([nav, [Markup.button.callback("⬅️ Panel", "admin:panel")]]),
+    keyboard: Markup.inlineKeyboard([nav, [Markup.button.callback("Panel", "admin:panel")]]),
   };
 };
 
 export const registerAdminHandlers = (bot) => {
   /* ------------------------------ /admin panel --------------------------- */
   const panel = (ctx) =>
-    ctx.replyWithHTML("<b>🛠 Admin panel</b>\nKerakli bo'limni tanlang:", adminMenu());
+    ctx.replyWithHTML("<b>Admin panel</b>\nKerakli bo'limni tanlang:", adminMenu());
 
   // adminOnly middleware handler'dan OLDIN turadi — mos kelmasa, handler umuman ishlamaydi
   bot.command("admin", adminOnly, panel);
-  bot.hears("🛠 Admin panel", adminOnly, panel);
+  bot.hears("Admin panel", adminOnly, panel);
 
   /* --------------------------- Matnli buyruqlar -------------------------- */
   bot.command("stats", adminOnly, async (ctx) => ctx.replyWithHTML(await statsText()));
@@ -115,7 +115,7 @@ export const registerAdminHandlers = (bot) => {
   bot.action("admin:panel", adminOnly, async (ctx) => {
     await ctx.answerCbQuery();
     await ctx
-      .editMessageText("<b>🛠 Admin panel</b>\nKerakli bo'limni tanlang:", {
+      .editMessageText("<b>Admin panel</b>\nKerakli bo'limni tanlang:", {
         parse_mode: "HTML",
         // ...adminMenu() — obyektni "yoyish" (spread): reply_markup maydonini
         // options obyektiga qo'shib yuboradi
@@ -130,7 +130,7 @@ export const registerAdminHandlers = (bot) => {
     await ctx
       .editMessageText(await statsText(), {
         parse_mode: "HTML",
-        ...Markup.inlineKeyboard([[Markup.button.callback("⬅️ Panel", "admin:panel")]]),
+        ...Markup.inlineKeyboard([[Markup.button.callback("Panel", "admin:panel")]]),
       })
       .catch(() => {});
   });
@@ -150,7 +150,7 @@ export const registerAdminHandlers = (bot) => {
     const envIds = envAdminIds();
 
     const text =
-      "<b>🛡 Adminlar</b>\n\n" +
+      "<b>Adminlar</b>\n\n" +
       (admins.length
         ? admins.map((a) => `• ${a.firstName || a.username || a.telegramId} — <code>${a.telegramId}</code>`).join("\n")
         : "DB'da admin yo'q") +

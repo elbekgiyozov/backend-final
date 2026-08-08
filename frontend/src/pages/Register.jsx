@@ -65,7 +65,7 @@ export default function Register() {
         <button
           type="submit"
           disabled={loading}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 py-2.5 font-medium text-white shadow-lg shadow-indigo-500/30 transition hover:opacity-95 disabled:opacity-60"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 py-2.5 font-medium text-white transition hover:bg-indigo-700 disabled:opacity-60"
         >
           {loading && <Spinner />}
           {loading ? "Yuborilmoqda..." : "Ro'yxatdan o'tish"}

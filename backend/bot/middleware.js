@@ -83,7 +83,7 @@ export const attachBotUser = async (ctx, next) => {
  */
 export const adminOnly = async (ctx, next) => {
   if (!ctx.state.isAdmin) {
-    const msg = "⛔️ Bu buyruq faqat adminlar uchun.";
+    const msg = "Bu buyruq faqat adminlar uchun.";
     // Agar inline tugma bosilgan bo'lsa — qalqib chiquvchi ogohlantirish ko'rsatamiz.
     // answerCbQuery chaqirilmasa, tugmada aylanma yuklanish belgisi qotib qoladi.
     if (ctx.callbackQuery) return ctx.answerCbQuery(msg, { show_alert: true });

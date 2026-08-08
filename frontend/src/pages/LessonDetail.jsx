@@ -77,7 +77,7 @@ export default function LessonDetail() {
       </Link>
 
       {lesson && (
-        <div className="my-5 rounded-2xl border border-gray-200 bg-gradient-to-br from-indigo-50 to-white p-6 dark:border-gray-800 dark:from-indigo-500/10 dark:to-gray-900">
+        <div className="my-5 rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
           <div className="mb-2 flex items-center gap-3">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{lesson.title}</h1>
             <LevelBadge level={lesson.level} />
@@ -120,16 +120,15 @@ export default function LessonDetail() {
           <button
             type="submit"
             disabled={saving}
-            className="flex items-center justify-center rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-5 font-medium text-white shadow-md shadow-indigo-500/30 transition hover:opacity-95 disabled:opacity-60"
+            className="flex items-center justify-center rounded-xl bg-indigo-600 px-5 font-medium text-white transition hover:bg-indigo-700 disabled:opacity-60"
           >
-            {saving ? <Spinner /> : "＋"}
+            {saving ? <Spinner /> : "+"}
           </button>
         </div>
       </form>
 
       {words.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-gray-300 py-12 text-center dark:border-gray-700">
-          <p className="text-3xl">✍️</p>
           <p className="mt-2 text-gray-500 dark:text-gray-400">Hali so'z yo'q. Birinchisini qo'shing!</p>
         </div>
       ) : (
@@ -154,7 +153,9 @@ export default function LessonDetail() {
                 className="rounded-lg p-1.5 text-gray-400 opacity-0 transition hover:bg-rose-50 hover:text-rose-600 group-hover:opacity-100 dark:hover:bg-rose-500/10"
                 title="O'chirish"
               >
-                ✕
+                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <path d="M6 6l12 12M18 6L6 18" />
+                </svg>
               </button>
             </li>
           ))}

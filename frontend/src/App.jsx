@@ -8,7 +8,7 @@ import LessonDetail from "./pages/LessonDetail";
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-50 via-white to-white text-gray-900 dark:from-gray-950 dark:via-gray-950 dark:to-black dark:text-white">
+    <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-white">
       <Navbar />
       <Routes>
         <Route path="/login" element={<Login />} />

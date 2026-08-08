@@ -24,7 +24,7 @@ export const errorHandler = (err, req, res, next) => {
   // Agar oldinroq status o'rnatilgan bo'lsa (masalan 400) — o'shani saqlaymiz,
   // aks holda 500 (Internal Server Error).
   const status = res.statusCode && res.statusCode !== 200 ? res.statusCode : 500;
-  console.error("❌", err.message);
+  console.error("", err.message);
 
   res.status(status).json({
     message: err.message || "Server xatosi",

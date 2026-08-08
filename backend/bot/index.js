@@ -73,14 +73,14 @@ export const buildBot = () => {
   //    Bu express.js dagi notFound middleware'ining bot versiyasi.
   bot.on("text", (ctx) => {
     if (ctx.message.text.startsWith("/")) {
-      return ctx.reply("❓ Noma'lum buyruq. /help ni ko'ring.", mainMenu(ctx.state.isAdmin));
+      return ctx.reply("Noma'lum buyruq. /help ni ko'ring.", mainMenu(ctx.state.isAdmin));
     }
     return ctx.reply("Pastdagi menyudan foydalaning yoki /help.", mainMenu(ctx.state.isAdmin));
   });
 
   // Global xatolik ushlovchi — bitta handler'dagi xato butun botni to'xtatmasligi uchun
   bot.catch((err, ctx) => {
-    console.error(`❌ Bot xatosi (${ctx.updateType}):`, err.message);
+    console.error(`Bot xatosi (${ctx.updateType}):`, err.message);
   });
 };
 
@@ -110,13 +110,13 @@ export const startBot = async (app) => {
     // createWebhook: Telegram'da webhook'ni ro'yxatga oladi VA
     // express uchun tayyor middleware qaytaradi
     app.use(await bot.createWebhook({ domain, path, secret_token: secretToken }));
-    console.log(`🤖 Telegram bot webhook rejimida: ${domain}${path}`);
+    console.log(`Telegram bot webhook rejimida: ${domain}${path}`);
   } else {
     /* --------------------------- POLLING (lokal) ------------------------- */
     // DIQQAT: bot.launch() ni `await` QILIB BO'LMAYDI — u polling to'xtaguncha
     // (ya'ni hech qachon) tugamaydi. Await qilinsa, server.js shu yerda qotib qoladi.
-    bot.launch().catch((err) => console.error("❌ Bot launch xatosi:", err.message));
-    console.log("🤖 Telegram bot polling rejimida ishga tushdi");
+    bot.launch().catch((err) => console.error("Bot launch xatosi:", err.message));
+    console.log("Telegram bot polling rejimida ishga tushdi");
   }
 
   // Server to'xtatilganda (Ctrl+C yoki deploy platformasi to'xtatganda)

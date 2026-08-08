@@ -42,7 +42,7 @@ export const register = async (req, res) => {
     // `await` QILINMAYDI — Telegram sekin javob bersa ham foydalanuvchi
     // kutib qolmasin. .catch() esa xatolik butun so'rovni yiqitmasligi uchun.
     notifyAdmins(
-      `🆕 <b>Yangi foydalanuvchi</b>\n\nIsm: ${user.name}\nEmail: ${user.email}\nVaqt: ${new Date().toLocaleString("uz-UZ")}`
+      `<b>Yangi foydalanuvchi</b>\n\nIsm: ${user.name}\nEmail: ${user.email}\nVaqt: ${new Date().toLocaleString("uz-UZ")}`
     ).catch(() => {});
 
     // 201 Created — yangi resurs yaratildi.

@@ -23,7 +23,7 @@ export const linkScene = new Scenes.WizardScene(
 
   /* --------------------------- 1-qadam: emailni so'rash ------------------ */
   (ctx) => {
-    ctx.reply("📧 Sayt akkauntingiz emailini yuboring (bekor qilish — /cancel):");
+    ctx.reply("Sayt akkauntingiz emailini yuboring (bekor qilish — /cancel):");
     return ctx.wizard.next(); // endi keyingi xabar 2-qadamga tushadi
   },
 
@@ -34,14 +34,14 @@ export const linkScene = new Scenes.WizardScene(
     const email = ctx.message?.text?.trim().toLowerCase();
 
     if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
-      ctx.reply("❌ Email formati noto'g'ri. Qaytadan kiriting yoki /cancel:");
+      ctx.reply("Email formati noto'g'ri. Qaytadan kiriting yoki /cancel:");
       // next() CHAQIRILMAYDI — shu qadamda qolamiz va qayta urinishga imkon beramiz
       return;
     }
 
     // Keyingi qadamda kerak bo'ladi — wizard.state ga saqlaymiz
     ctx.wizard.state.email = email;
-    ctx.reply("🔑 Endi parolni yuboring (xabar darhol o'chiriladi):");
+    ctx.reply("Endi parolni yuboring (xabar darhol o'chiriladi):");
     return ctx.wizard.next();
   },
 
@@ -49,7 +49,7 @@ export const linkScene = new Scenes.WizardScene(
   async (ctx) => {
     const password = ctx.message?.text;
     if (!password) {
-      ctx.reply("❌ Parolni matn ko'rinishida yuboring yoki /cancel:");
+      ctx.reply("Parolni matn ko'rinishida yuboring yoki /cancel:");
       return;
     }
 
@@ -63,7 +63,7 @@ export const linkScene = new Scenes.WizardScene(
     // Email va parolni ALOHIDA tekshirmaymiz — bitta umumiy xabar beramiz,
     // aks holda bot orqali qaysi emaillar mavjudligini aniqlash mumkin bo'lardi
     if (!user || !(await user.matchPassword(password))) {
-      await ctx.reply("❌ Email yoki parol noto'g'ri. Qaytadan urinish: /link");
+      await ctx.reply("Email yoki parol noto'g'ri. Qaytadan urinish: /link");
       return ctx.scene.leave();
     }
 
@@ -71,7 +71,7 @@ export const linkScene = new Scenes.WizardScene(
     // $ne — "not equal": o'zimizdan boshqa kimdir bog'lab qo'yganmi?
     const taken = await BotUser.findOne({ user: user._id, telegramId: { $ne: ctx.from.id } });
     if (taken) {
-      await ctx.reply("⚠️ Bu akkaunt boshqa Telegram profiliga bog'langan.");
+      await ctx.reply("Bu akkaunt boshqa Telegram profiliga bog'langan.");
       return ctx.scene.leave();
     }
 
@@ -79,7 +79,7 @@ export const linkScene = new Scenes.WizardScene(
     await BotUser.updateOne({ telegramId: ctx.from.id }, { $set: { user: user._id } });
 
     await ctx.reply(
-      `✅ Akkaunt bog'landi: *${user.name}* (${user.email})`,
+      `Akkaunt bog'landi: *${user.name}* (${user.email})`,
       // Bu yerda Markdown ishlatilgan (*qalin*), HTML emas
       { parse_mode: "Markdown", ...mainMenu(user.role === "admin" || ctx.state.isAdmin) }
     );

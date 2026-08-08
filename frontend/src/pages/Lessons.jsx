@@ -69,7 +69,7 @@ export default function Lessons() {
     <div className="mx-auto max-w-5xl px-4 py-10">
       <header className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
-          Salom, {user?.name} 👋
+          Salom, {user?.name}
         </h1>
         <p className="mt-1 text-gray-500 dark:text-gray-400">
           Darslar to'plamingizni boshqaring va yangi so'zlar o'rganing.
@@ -82,7 +82,7 @@ export default function Lessons() {
         className="mb-10 rounded-2xl border border-gray-200 bg-white/70 p-5 shadow-sm backdrop-blur dark:border-gray-800 dark:bg-gray-900/60"
       >
         <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-          <span className="text-indigo-500">＋</span> Yangi dars
+          <span className="text-indigo-500">+</span> Yangi dars
         </h2>
         <div className="grid gap-3 sm:grid-cols-2">
           <input
@@ -110,7 +110,7 @@ export default function Lessons() {
         <button
           type="submit"
           disabled={saving}
-          className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-2.5 font-medium text-white shadow-lg shadow-indigo-500/30 transition hover:opacity-95 disabled:opacity-60"
+          className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-2.5 font-medium text-white transition hover:bg-indigo-700 disabled:opacity-60"
         >
           {saving && <Spinner />}
           {saving ? "Saqlanmoqda..." : "Dars qo'shish"}
@@ -133,7 +133,6 @@ export default function Lessons() {
         </div>
       ) : lessons.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-gray-300 py-16 text-center dark:border-gray-700">
-          <p className="text-4xl">📭</p>
           <p className="mt-2 text-gray-500 dark:text-gray-400">Hozircha dars yo'q. Birinchisini qo'shing!</p>
         </div>
       ) : (
@@ -150,7 +149,9 @@ export default function Lessons() {
                   className="rounded-lg p-1 text-gray-400 opacity-0 transition hover:bg-rose-50 hover:text-rose-600 group-hover:opacity-100 dark:hover:bg-rose-500/10"
                   title="O'chirish"
                 >
-                  🗑️
+                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                    <path d="M6 6l12 12M18 6L6 18" />
+                  </svg>
                 </button>
               </div>
               <Link to={`/lessons/${l._id}`} className="flex-1">
@@ -181,7 +182,7 @@ export default function Lessons() {
               onClick={() => load(p)}
               className={`h-10 w-10 rounded-xl text-sm font-medium transition ${
                 p === pagination.page
-                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md shadow-indigo-500/30"
+                  ? "bg-indigo-600 text-white"
                   : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
               }`}
             >

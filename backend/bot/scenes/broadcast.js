@@ -16,7 +16,7 @@ export const broadcastScene = new Scenes.WizardScene(
 
   /* ------------------------ 1-qadam: matnni so'rash ---------------------- */
   (ctx) => {
-    ctx.reply("📣 Yubormoqchi bo'lgan xabar matnini kiriting (/cancel — bekor):");
+    ctx.reply("Yubormoqchi bo'lgan xabar matnini kiriting (/cancel — bekor):");
     return ctx.wizard.next();
   },
 
@@ -24,7 +24,7 @@ export const broadcastScene = new Scenes.WizardScene(
   (ctx) => {
     const text = ctx.message?.text?.trim();
     if (!text) {
-      ctx.reply("❌ Matn yuboring yoki /cancel:");
+      ctx.reply("Matn yuboring yoki /cancel:");
       return; // shu qadamda qolamiz
     }
 
@@ -47,7 +47,7 @@ export const broadcastScene = new Scenes.WizardScene(
 );
 
 /**
- * "✅ Ha, yuborish" tugmasi.
+ * "Ha, yuborish" tugmasi.
  * Scene ichida ro'yxatga olingan action — faqat shu wizard'dagi
  * foydalanuvchi uchun ishlaydi va ctx.wizard.state ga kirish imkoni bor.
  */
@@ -59,18 +59,18 @@ broadcastScene.action("bcast:yes", async (ctx) => {
 
   // Yuborish uzoq davom etishi mumkin (har xabar orasida 40 ms tanaffus),
   // shuning uchun avval "kutib turing" xabarini beramiz
-  await ctx.reply("⏳ Yuborilmoqda...");
+  await ctx.reply("Yuborilmoqda...");
 
   const res = await broadcast(ctx.wizard.state.text);
 
   await ctx.reply(
-    `✅ Yuborildi: ${res.sent} ta\n❌ Yetib bormadi: ${res.failed} ta\n👥 Jami: ${res.total} ta`,
+    `Yuborildi: ${res.sent} ta\nYetib bormadi: ${res.failed} ta\nJami: ${res.total} ta`,
     mainMenu(ctx.state.isAdmin)
   );
   return ctx.scene.leave();
 });
 
-/** "❌ Bekor" tugmasi */
+/** "Bekor" tugmasi */
 broadcastScene.action("bcast:no", async (ctx) => {
   // answerCbQuery ga matn berilsa — ekran tepasida qisqa bildirishnoma chiqadi
   await ctx.answerCbQuery("Bekor qilindi");
